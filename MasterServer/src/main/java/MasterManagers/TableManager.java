@@ -1,7 +1,6 @@
 package MasterManagers;
 
 import MasterManagers.SocketManager.SocketThread;
-import com.google.common.collect.Table;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,10 +15,8 @@ import java.util.List;
 public class TableManager {
     private Map<String, String> TableInfo;
     private List<String> serverList;
-    // Serverip -> table list
-    private Map<String, List<String>> liveServer;
-    // ip -> socket
-    private Map<String, SocketThread> socketThreadMap;
+    private Map<String, List<String>> liveServer; // Serverip -> table list
+    private Map<String, SocketThread> socketThreadMap;  // ip -> socket
 
     public TableManager() throws IOException {
         TableInfo = new HashMap<>();
@@ -34,11 +31,23 @@ public class TableManager {
      * 找到当前最适合的Server 标准就是server对应的table list最少
      * @return
      */
-    public String getIdealiServer(){
+    public String getIdealServer(){
         Integer min = Integer.MAX_VALUE;
         String result = "";
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
             if(entry.getValue().size() < min){
+                min = entry.getValue().size();
+                result = entry.getKey();
+            }
+        }
+        return result;
+    }
+
+    public String getIdealServer(String hostURL){
+        Integer min = Integer.MAX_VALUE;
+        String result = "";
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            if(!entry.getKey().equals(hostURL) && entry.getValue().size()<min){
                 min = entry.getValue().size();
                 result = entry.getKey();
             }
@@ -70,6 +79,26 @@ public class TableManager {
         }
         return null;
     }
+
+    // ---------- 有关 table 的------------
+
+    public void addTable(String table, String ip){
+        TableInfo.put(table,ip);
+        // 如果当前的ip已存在活跃列表中，那么将table计入其对应的list里保存。
+        if(liveServer.containsKey(ip))
+            liveServer.get(ip).add(table);
+        else{ // 先新建一个空的列表，然后将这一新的ip<->list对存入
+            List<String> empty_list = new ArrayList<>();
+            empty_list.add(table);
+            liveServer.put(ip, empty_list);
+        }
+    }
+
+    public void deleteTable(String table, String ip){
+        TableInfo.remove(table);
+        liveServer.get(ip).removeIf(table::equals);
+    }
+
 
 
 }
