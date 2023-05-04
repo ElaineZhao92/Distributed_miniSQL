@@ -1,4 +1,5 @@
 package MasterManagers;
+import MasterManagers.utils.ServiceMonitor;
 import lombok.extern.slf4j.Slf4j;
 import MasterManagers.utils.CuratorHolder;
 
@@ -30,9 +31,16 @@ public class ZookeeperManager implements Runnable {
             // 开启主连接
             CuratorHolder curatorClientHolder = new CuratorHolder(ZK_HOST);
             // 创建服务器主目录
-            if(!curatorClientHolder.checkNodeExist(ZNODE))
+            if(!curatorClientHolder.checkNodeExist(ZNODE)) {
                 curatorClientHolder.createNode(ZNODE, "服务器主目录");
-        } catch (Exception e){
+            }
+            // 开始监听服务器目录，如果有节点的变化，则处理相应事件
+            curatorClientHolder.monitorChildrenNodes(ZNODE, new ServiceMonitor(curatorClientHolder,tableManager));
+
+        }
+
+
+        catch (Exception e){
             log.warn(e.getMessage(), e);
         }
     }

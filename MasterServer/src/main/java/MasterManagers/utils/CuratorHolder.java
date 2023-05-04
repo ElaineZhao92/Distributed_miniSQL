@@ -4,12 +4,16 @@ import MasterManagers.ZookeeperManager;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.apache.zookeeper.CreateMode;
 
 public class CuratorHolder {
     private CuratorFramework client = null;
@@ -59,6 +63,7 @@ public class CuratorHolder {
         return client.create().creatingParentsIfNeeded().forPath(registerPath, value.getBytes());
     }
 
+
     /**
      *
      * @param registerPath  节点路径
@@ -82,4 +87,31 @@ public class CuratorHolder {
         else
             throw new RuntimeException("节点类型不采纳");
     }
+
+    /**
+     * 获取单个节点
+     *
+     * @param targetPath
+     * @return
+     */
+    public String getData(String targetPath) throws Exception {
+        checkClientConnected();
+        return new String(client.getData().forPath(targetPath));
+    }
+
+    /**
+     * 监听子节点数据变化
+     *
+     * @param targetPath
+     * @param listener
+     * @throws Exception
+     */
+    public void monitorChildrenNodes(String targetPath, PathChildrenCacheListener listener) throws Exception {
+        final PathChildrenCache childrenCache = new PathChildrenCache(client, targetPath, true);
+        childrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
+        childrenCache.getListenable().addListener(listener, pool);
+    }
+
 }
+
+

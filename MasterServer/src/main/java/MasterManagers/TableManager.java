@@ -80,6 +80,19 @@ public class TableManager {
         return null;
     }
 
+    public SocketThread getSocketThread(String hostUrl) {
+        for(Map.Entry<String, SocketThread> entry : socketThreadMap.entrySet()){
+            if(entry.getKey().equals(hostUrl))
+                return entry.getValue();
+        }
+        return null;
+    }
+
+    public void recoverServer(String hostUrl) {
+        List<String> temp = new ArrayList<>();
+        liveServer.put(hostUrl,temp);
+    }
+
     // ---------- 有关 table 的------------
 
     public void addTable(String table, String ip){
@@ -99,6 +112,23 @@ public class TableManager {
         liveServer.get(ip).removeIf(table::equals);
     }
 
+    public void exchangeTable(String bestInet, String hostUrl) {
+        List <String> tableList = getTableList(hostUrl);
+        for(String table : tableList){
+            TableInfo.put(table,bestInet);
+        }
+        List <String> bestInetTable = liveServer.get(bestInet);
+        bestInetTable.addAll(tableList);
+        liveServer.put(bestInet,bestInetTable);
+        liveServer.remove(hostUrl);
+    }
 
-
+    public List<String> getTableList(String hostUrl) {
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            if(entry.getKey().equals(hostUrl)){
+                return  entry.getValue();
+            }
+        }
+        return null;
+    }
 }
