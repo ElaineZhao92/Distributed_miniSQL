@@ -11,6 +11,7 @@ import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
+@Slf4j
 public class ZookeeperServiceManager implements Runnable {
     @Override
     public void run() {

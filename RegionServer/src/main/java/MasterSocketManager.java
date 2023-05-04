@@ -7,7 +7,6 @@ import java.util.Scanner;
 import lombok.SneakyThrows;
 import miniSQL.API;
 import miniSQL.Interpreter;
-import DatabaseManager;
 
 // 负责和主节点进行通信的类
 public class MasterSocketManager implements Runnable {
@@ -15,7 +14,7 @@ public class MasterSocketManager implements Runnable {
     private BufferedReader input = null;
     private PrintWriter output = null;
     private FtpUtils ftpUtils;
-    private DataBaseManager dataBaseManager;
+    private DatabaseManager dataBaseManager;
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
@@ -24,7 +23,7 @@ public class MasterSocketManager implements Runnable {
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);
         this.ftpUtils = new FtpUtils();
-        this.dataBaseManager = new DataBaseManager();
+        this.dataBaseManager = new DatabaseManager();
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         output = new PrintWriter(socket.getOutputStream(), true);
         isRunning = true;
