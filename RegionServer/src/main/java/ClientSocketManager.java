@@ -16,12 +16,12 @@ import miniSQL.Interpreter;
 
 //负责从节点与客户端通信
 public class ClientSocketManager implements Runnable{
-    private MasterSocketManager masterSockerManager;
+    private MasterSocketManager masterSocketManager;
     private ServerSocket serversocket;
 
     ClientSocketManager(int port, MasterSocketManager masterSocketManager) throws IOException{
         this.serversocket=new ServerSocket(port);
-        this.masterSockerManager=masterSocketManager;
+        this.masterSocketManager=masterSocketManager;
     }
 
     //不断循环连接客户端
@@ -30,7 +30,7 @@ public class ClientSocketManager implements Runnable{
             Socket socket;
             try {
                 socket = serversocket.accept();
-                Client client=new Client(socket,masterSockerManager);
+                Client client=new Client(socket,masterSocketManager);
                 new Thread(client).start();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -44,14 +44,14 @@ public class ClientSocketManager implements Runnable{
 
 class Client implements Runnable{
     private Socket socket;
-    private MasterSocketManager masterSockerManager;
+    private MasterSocketManager masterSocketManager;
     private BufferedReader input;
     private PrintWriter output;
     private FtpUtils ftpUtils;
 
     Client(Socket socket,MasterSocketManager masterSockerManager) throws IOException{
         this.socket=socket;
-        this.masterSockerManager=masterSockerManager;
+        this.masterSocketManager=masterSockerManager;
         this.ftpUtils=new FtpUtils();
         this.input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output=new PrintWriter(socket.getOutputStream(),true);
@@ -68,7 +68,7 @@ class Client implements Runnable{
                     boolean isTableModified=getResult(sql,socket.getInetAddress().toString(),res);
                     //看是否发生了表的增删，需要通知主节点
                     if(isTableModified){
-                        masterSockerManager.sendToMaster(res);
+                        masterSocketManager.sendToMaster(res);
                     }
                 }
             } catch (IOException e) {
@@ -85,11 +85,11 @@ class Client implements Runnable{
     public boolean getResult (String sql,String ip,String res) throws Exception {
         boolean flag=false;
         //处理sql语句
-        res=Interpreter.interpret(sql);
+        String result=Interpreter.interpret(sql);
         //保存catalog到文件中
         API.store();
         //返回结果给客户端
-        output.println(res);
+        output.println(result);
         //把catalog备份到FTP上
         ftpUtils.uploadFile("table_catalog", SocketUtils.getHostAddress(), "catalog");
         ftpUtils.uploadFile("index_catalog", SocketUtils.getHostAddress(), "catalog");
@@ -100,11 +100,13 @@ class Client implements Runnable{
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
             sendToFTP(tablename);
+            res="[region] "+tablename+" add";
             flag=true;
         }
         else if(keyword.equals("drop")){ //删表
             //把表名从ftp上删除
             deleteFromFTP(tablename);
+            res="[region] "+tablename+" delete";
             flag=true;
         }
         else if(keyword.equals("insert")||keyword.equals("delete")){ //记录的增删
