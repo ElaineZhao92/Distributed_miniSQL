@@ -100,13 +100,13 @@ class Client implements Runnable{
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
             sendToFTP(tablename);
-            res="[region] "+tablename+" add";
+            res="[region] add "+tablename;
             flag=true;
         }
         else if(keyword.equals("drop")){ //删表
             //把表名从ftp上删除
             deleteFromFTP(tablename);
-            res="[region] "+tablename+" delete";
+            res="[region] delete "+tablename;
             flag=true;
         }
         else if(keyword.equals("insert")||keyword.equals("delete")){ //记录的增删
