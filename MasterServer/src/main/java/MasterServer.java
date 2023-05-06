@@ -18,9 +18,9 @@ import java.io.IOException;
  *
  */
 public class MasterServer {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
-//        MasterManager masterManager = new MasterManager();
-//        masterManager.initialize();
+    public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
+//        System.out.println("Hello world!");
+        MasterManager masterManager = new MasterManager();
+        masterManager.initialize();
     }
 }

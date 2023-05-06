@@ -74,13 +74,15 @@ class Client implements Runnable{
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            
-            
+
+
         }
     }
 
-    public boolean getResult(String sql,String ip,String res){
+    public boolean getResult (String sql,String ip,String res) throws Exception {
         boolean flag=false;
         //处理sql语句
         res=Interpreter.interpret(sql);

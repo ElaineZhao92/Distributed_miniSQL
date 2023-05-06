@@ -10,6 +10,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -111,7 +112,16 @@ public class CuratorHolder {
         childrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
         childrenCache.getListenable().addListener(listener, pool);
     }
-
+    /**
+     * 获取子节点列表
+     *
+     * @param targetPath
+     * @return 子节点名字列表
+     */
+    public List<String> getChildren(String targetPath) throws Exception {
+        checkClientConnected();
+        return client.getChildren().forPath(targetPath);
+    }
 }
 
 

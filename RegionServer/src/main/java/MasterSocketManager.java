@@ -17,7 +17,7 @@ public class MasterSocketManager implements Runnable {
     private DatabaseManager dataBaseManager;
     private boolean isRunning = false;
 
-    public final int SERVER_PORT = 12345;
+    public final int SERVER_PORT = 4866;
     public final String MASTER = "localhost";
 
     public MasterSocketManager() throws IOException {
@@ -45,22 +45,22 @@ public class MasterSocketManager implements Runnable {
             line = input.readLine();
         }
         if (line != null) {
-            if (line.startsWith("<master>[3]")) {
-                // <master>[3] drop ip name name
-                String info = line.substring(17);
-                if(line.length() == 17) return;
+            if (line.startsWith("[master] drop")) {
+                String info = line.substring(14);
+                if(line.length()==14) return;
+                // [master] drop ip name name
                 String[] ini_tables = info.split(" ");
                 String[] tables = new String[2];
-                System.arraycopy(ini_tables, 2, tables, 0, 2);
-                // <master[3]>ip#name@name@...
+                System.arraycopy(ini_tables, 1, tables, 0, 2);
                 for(String table : tables) {
                     delFile(table);
                     delFile(table + "_index.index");
                     ftpUtils.downLoadFile("table", table, "");
-                    System.out.println("Download successfully: " + table);
+                    System.out.println("success " + table);
                     ftpUtils.downLoadFile("index", table + "_index.index", "");
-                    System.out.println("Download successfully: " + table + "_index.index");
+                    System.out.println("success " + table + "_index.index");
                 }
+                // String ip = info.split("#")[0];
                 String ip = ini_tables[1];
                 ftpUtils.additionalDownloadFile("catalog", ip + "#table_catalog");
                 ftpUtils.additionalDownloadFile("catalog", ip + "#index_catalog");
@@ -71,9 +71,9 @@ public class MasterSocketManager implements Runnable {
                     e.printStackTrace();
                 }
                 System.out.println("here");
-                output.println("<region>[3] drop successfully");
+                output.println("<region>[3]Complete disaster recovery");
             }
-            else if (line.equals("<master>[4]recover")) {
+            else if (line.equals("[master] recover")) {
                 String tableName = dataBaseManager.getMetaInfo();
                 String[] tableNames = tableName.split(" ");
                 for(String table: tableNames) {
@@ -86,7 +86,7 @@ public class MasterSocketManager implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                output.println("<master>[4] recover successfully");
+                output.println("[region] recover successfully");
             }
         }
     }
