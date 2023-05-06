@@ -71,7 +71,7 @@ public class MasterSocketManager implements Runnable {
                     e.printStackTrace();
                 }
                 System.out.println("here");
-                output.println("<region>[3]Complete disaster recovery");
+                output.println("[region] drop successfully");
             }
             else if (line.equals("[master] recover")) {
                 String tableName = dataBaseManager.getMetaInfo();
