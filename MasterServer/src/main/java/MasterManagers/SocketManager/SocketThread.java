@@ -50,26 +50,28 @@ public class SocketThread implements Runnable{
     public void processCmd(String cmd){
         log.warn(cmd);
         String result = "";
-        if(cmd.startsWith("<client>"))
-            result = clientProcessCmd(cmd.substring(8));
-        else if(cmd.startsWith("<region>"))
-            result = regionProcessCmd(cmd.substring(8));
+        if(cmd.startsWith("[client]"))
+            result = clientProcessCmd(cmd.substring(9));
+        else if(cmd.startsWith("[region]"))
+            result = regionProcessCmd(cmd.substring(9));   // 如果这里没有空格 那么就8
 
         if(!result.equals(""))
             this.sendToRegion(result);
     }
 
     public void sendToRegion(String result){
-        output.println("<master>"+result);
+        output.println("[master]"+result);
     }
 
     public String clientProcessCmd(String cmd){
         String result = "";
-        String tableName = cmd.substring(3);
-        if (cmd.startsWith("[1]")) {
-            result = "[1]"+tableManager.getInetAddress(tableName) +" "+ tableName;
-        } else if (cmd.startsWith("[2]")) {
-            result = "[2]"+tableManager.getIdealServer() + " " +tableName;
+        String tableName = "";
+        if (cmd.startsWith("query")) { // query table_name
+            tableName = cmd.substring(6); // 空格
+            result = "query "+tableManager.getInetAddress(tableName) +" "+ tableName;
+        } else if (cmd.startsWith("create")) { // create table_name
+            tableName = cmd.substring(7);
+            result = "create "+tableManager.getIdealServer() + " " +tableName;
         }
         return result;
     }
@@ -78,26 +80,29 @@ public class SocketThread implements Runnable{
         String ip = socket.getInetAddress().getHostAddress();
         if(ip.equals("127.0.0.1"))
             ip = SocketUtils.loopbackAddress().getHostAddress();
-        if (cmd.startsWith("[1]") && !tableManager.hasServer(ip)) {
+        if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
-            String[] allTable = cmd.substring(3).split(" ");
+            String[] allTable = cmd.substring(6).split(" ");
             for(String temp : allTable) {
                 tableManager.addTable(temp, ip);
             }
-        } else if (cmd.startsWith("[2]")) {
-            String[] line = cmd.substring(3).split(" ");
-            if(line[1].equals("delete")){
-                tableManager.deleteTable(line[0],ip);
-                result += "delete Table "+line[0] + "\n";
-            }
-            else if(line[1].equals("add")){
-                tableManager.addTable(line[0],ip);
-                result += "add Table "+line[0] + "\n";
-            }
-        }else if (cmd.startsWith("[3]")){
+        } else if (cmd.startsWith("add")) {
+            // [region] add/delete table_name 情况
+            String tableName = cmd.substring(4);
+            tableManager.addTable(tableName,ip);
+            result += "add Table" + tableName + "\n";
+
+        } else if (cmd.startsWith("delete")) {
+            String tableName = cmd.substring(7);
+            tableManager.deleteTable(tableName,ip);
+            result += "delete Table" + tableName + "\n";
+
+        } else if (cmd.startsWith("drop")){
             log.warn("完成从节点的数据转移");
-        }else if (cmd.startsWith("[4]")){
+
+        } else if (cmd.startsWith("recover")){
             log.warn("完成从节点的恢复，重新上线");
+
         }
 
         return result;
