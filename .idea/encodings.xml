@@ -7,5 +7,7 @@
     <file url="file://$PROJECT_DIR$/MasterServer/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RegionServer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RegionServer/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/miniSQL/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/miniSQL/src/main/resources" charset="UTF-8" />
   </component>
 </project>

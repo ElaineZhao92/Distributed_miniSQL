@@ -1,4 +1,4 @@
-/*package test;
+package miniSQL.test;/*package test;
 
 import BUFFERMANAGER.BufferManager;
 import CATALOGMANAGER.*;

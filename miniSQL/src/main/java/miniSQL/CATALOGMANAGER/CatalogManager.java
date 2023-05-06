@@ -3,7 +3,10 @@ package miniSQL.CATALOGMANAGER;
 import miniSQL.INDEXMANAGER.Index;
 
 import java.io.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Vector;
 
 public class CatalogManager {
 

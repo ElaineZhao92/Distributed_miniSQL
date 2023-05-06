@@ -1,8 +1,13 @@
 package miniSQL.INDEXMANAGER;
 
-import miniSQL.CATALOGMANAGER.*;
-import miniSQL.BUFFERMANAGER.*;
-import miniSQL.RECORDMANAGER.*;
+import miniSQL.BUFFERMANAGER.Block;
+import miniSQL.BUFFERMANAGER.BufferManager;
+import miniSQL.CATALOGMANAGER.Address;
+import miniSQL.CATALOGMANAGER.CatalogManager;
+import miniSQL.CATALOGMANAGER.FieldType;
+import miniSQL.CATALOGMANAGER.NumType;
+import miniSQL.RECORDMANAGER.Condition;
+import miniSQL.RECORDMANAGER.TableRow;
 
 import java.io.*;
 import java.util.LinkedHashMap;

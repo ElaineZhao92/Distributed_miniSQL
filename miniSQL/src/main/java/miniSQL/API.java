@@ -1,7 +1,9 @@
 package miniSQL;
 
 import miniSQL.BUFFERMANAGER.BufferManager;
-import miniSQL.CATALOGMANAGER.*;
+import miniSQL.CATALOGMANAGER.Address;
+import miniSQL.CATALOGMANAGER.CatalogManager;
+import miniSQL.CATALOGMANAGER.Table;
 import miniSQL.INDEXMANAGER.Index;
 import miniSQL.INDEXMANAGER.IndexManager;
 import miniSQL.RECORDMANAGER.Condition;

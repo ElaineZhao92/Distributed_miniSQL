@@ -1,11 +1,11 @@
 package miniSQL;
 
 import miniSQL.BUFFERMANAGER.BufferManager;
-import miniSQL.CATALOGMANAGER.NumType;
-import miniSQL.INDEXMANAGER.Index;
 import miniSQL.CATALOGMANAGER.Attribute;
 import miniSQL.CATALOGMANAGER.CatalogManager;
+import miniSQL.CATALOGMANAGER.NumType;
 import miniSQL.CATALOGMANAGER.Table;
+import miniSQL.INDEXMANAGER.Index;
 
 import java.io.IOException;
 import java.util.Vector;
