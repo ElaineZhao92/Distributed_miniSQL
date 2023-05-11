@@ -26,12 +26,11 @@ public class ServiceMonitor implements PathChildrenCacheListener {
         this.client = curatorClientHolder;
     }
 
+    //当子节点的事件发生时，childEvent()方法会被调用
     @Override
     public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
-        String hostName, hostUrl;
         String eventPath = pathChildrenCacheEvent.getData() != null ? pathChildrenCacheEvent.getData().getPath() : null;
 
-        // 接收到事件，对事件类型进行判断并执行相应策略
         switch (pathChildrenCacheEvent.getType()) {
             case CHILD_ADDED:
                 log.warn("服务器目录新增节点: " + pathChildrenCacheEvent.getData().getPath());
@@ -97,13 +96,5 @@ public class ServiceMonitor implements PathChildrenCacheListener {
      */
     public void eventServerUpdate(String hostName, String hostUrl) {
         log.warn("更新服务器节点：主机名 {}, 地址 {}", hostName, hostUrl);
-//        DataServer thisServer;
-//        if (ServiceStrategyExecutor.DataHolder.dataServers.get(hostName) == null) {
-//            throw new RuntimeException("需要更新信息的服务器不存在于服务器列表中");
-//        } else {
-//            // 更新服务器的URL
-//            thisServer = ServiceStrategyExecutor.DataHolder.dataServers.get(hostName);
-//            thisServer.setHostUrl(hostUrl);
-//        }
     }
 }

@@ -7,19 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 
-/**
- * 1. 从节点每次创表、插入、删除，在完成操作后将所修改的表和索引传输到ftp。
- * 2. 如果从节点挂了，主节点监测到后寻找表少的从节点，向该从节点发送备份指令（包括挂了的从节点所存储的所有表），从节点将表
- *    和索引从ftp上读取下来。读取完成后给主节点发消息，主节点收到后修改 table-server map
- * 3. 如果从节点重新连上，执行恢复策略，主节点向从节点发送恢复指令，从节点收到后将本节点表全部删除，删除完成后给主节点发消息，
- *    主节点收到后将其状态变更为有效的从节点，恢复正常使用
- */
 @Slf4j
 public class ServiceStrategyExecutor {
 
     private TableManager tableManager;
 
-    public ServiceStrategyExecutor(TableManager tableManger) {
+    public ServiceStrategyExecutor(TableManager tableManager) {
         this.tableManager = tableManager;
     }
 
@@ -45,9 +38,11 @@ public class ServiceStrategyExecutor {
         }
     }
 
+
+    //主节点给负载小的从节点发送挂掉从节点的 ip 与所有的表
     private void execInvalidStrategy (String hostUrl) {
         StringBuffer allTable = new StringBuffer();
-        List<String> tableList = tableManager.getTableList(hostUrl);
+        List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
         //<master>[3]ip#name@name@
         String bestInet = tableManager.getIdealServer(hostUrl);
         log.warn("bestInet:"+bestInet);
@@ -70,7 +65,7 @@ public class ServiceStrategyExecutor {
     private void execDiscoverStrategy(String hostUrl) {
 
     }
-
+    //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，
     private void execRecoverStrategy(String hostUrl) {
         tableManager.recoverServer(hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);

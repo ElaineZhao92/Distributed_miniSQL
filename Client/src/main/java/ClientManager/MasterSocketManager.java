@@ -22,7 +22,7 @@ public class MasterSocketManager {
 
     // 服务器的IP和端口号
     private final String master = "localhost";
-    private final int PORT = 12345;
+    private final int PORT = 4866;
 
     // 使用map来存储需要处理的表名-sql语句的对应关系
     Map<String, String> commandMap = new HashMap<>();
