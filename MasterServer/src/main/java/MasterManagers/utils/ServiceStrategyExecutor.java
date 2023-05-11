@@ -26,9 +26,6 @@ public class ServiceStrategyExecutor {
                 case RECOVER:
                     execRecoverStrategy(hostUrl);
                     break;
-                case DISCOVER:
-                    execDiscoverStrategy(hostUrl);
-                    break;
                 case INVALID:
                     execInvalidStrategy(hostUrl);
                     break;
@@ -62,9 +59,6 @@ public class ServiceStrategyExecutor {
         socketThread.sendToRegion("[3]"+allTable);
     }
 
-    private void execDiscoverStrategy(String hostUrl) {
-
-    }
     //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，
     private void execRecoverStrategy(String hostUrl) {
         tableManager.recoverServer(hostUrl);

@@ -1,11 +1,9 @@
 package MasterManagers.utils;
 
 public enum StrategyTypeEnum {
-    DISCOVER(1),
+    RECOVER(1),
 
-    RECOVER(2),
-
-    INVALID(3),
+    INVALID(2),
 
     ;
 
