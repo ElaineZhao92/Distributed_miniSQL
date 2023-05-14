@@ -54,12 +54,12 @@ public class MasterSocketManager {
     public void receiveFromMaster() throws IOException, InterruptedException {
         String line = null;
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-            System.out.println("新消息>>>Socket已经关闭!");
+            System.out.println("CIENT>>>Socket closed !");
         } else {
             line = input.readLine();
         }
         if (line != null) {
-            System.out.println("新消息>>>从服务器收到的信息是：" + line);
+            System.out.println("CIENT>>>Info from master is: " + line);
             // 已经废弃的方案
             if (line.startsWith("<table>")) {
                 String[] args = line.substring(7).split(" ");
@@ -105,7 +105,7 @@ public class MasterSocketManager {
     public void processCreate(String sql, String table) {
         this.commandMap.put(table, sql);
         // 用<table>前缀表示要查某个表名对应的端口号
-        System.out.println("存入table的是" + table + " " + sql);
+        System.out.println("the sql is: " + sql + " the table is: " + table);
         this.sendToMasterCreate(table);
     }
 
@@ -123,7 +123,7 @@ public class MasterSocketManager {
     class InfoListener extends Thread {
         @Override
         public void run() {
-            System.out.println("新消息>>>客户端的主服务器监听线程启动！");
+            System.out.println("CIENT>>>start listening to master!");
             while (isRunning) {
                 if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
                     isRunning = false;

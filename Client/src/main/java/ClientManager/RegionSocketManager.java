@@ -52,7 +52,7 @@ public class RegionSocketManager {
             line = input.readLine();
         }
         if (line != null) {
-            System.out.println("CIENT>>>Info from server is: " + line);
+            System.out.println("CIENT>>>Info from region is: " + line);
         }
     }
 
@@ -78,7 +78,7 @@ public class RegionSocketManager {
     class InfoListener extends Thread {
         @Override
         public void run() {
-            System.out.println("CIENT>>>start listening!");
+            System.out.println("CIENT>>>start listening to region!");
             while (isRunning) {
                 if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
                     isRunning = false;
