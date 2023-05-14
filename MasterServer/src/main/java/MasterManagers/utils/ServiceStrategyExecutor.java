@@ -40,30 +40,29 @@ public class ServiceStrategyExecutor {
     private void execInvalidStrategy (String hostUrl) {
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
-        //<master>[3]ip#name@name@
+        //[master] drop ip name name
         String bestInet = tableManager.getIdealServer(hostUrl);
         log.warn("bestInet:"+bestInet);
-        allTable.append(hostUrl+"#");
+        allTable.append(hostUrl+" ");
         int i = 0;
         for(String s:tableList){
-            if(i==0){
+            if(i==0)
                 allTable.append(s);
-            }
             else {
-                allTable.append("@");
+                allTable.append(" ");
                 allTable.append(s);
             }
         }
         tableManager.exchangeTable(bestInet,hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(bestInet);
-        socketThread.sendToRegion("[3]"+allTable);
+        socketThread.sendToRegion("drop"+allTable);
     }
 
     //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，
     private void execRecoverStrategy(String hostUrl) {
         tableManager.recoverServer(hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
-        socketThread.sendToRegion("[4]recover");
+        socketThread.sendToRegion("recover");
     }
 
 
