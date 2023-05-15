@@ -78,7 +78,8 @@ public class MasterSocketManager {
             else if (line.startsWith("[master]")) {
                 // 截取ip地址
                 String[] args = line.split(" ");
-                String ip = args[3], table = "";
+                System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
+                String ip = args[2], table = args[3];
                 this.clientManager.cacheManager.setCache(table, ip);
                 this.clientManager.connectToRegion(ip, commandMap.get(table));
             }

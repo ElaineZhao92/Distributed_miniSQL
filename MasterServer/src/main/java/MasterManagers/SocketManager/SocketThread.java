@@ -60,7 +60,7 @@ public class SocketThread implements Runnable{
     }
 
     public void sendToRegion(String result){
-        output.println("[master]"+result);
+        output.println("[master] "+result);
     }
 
     public String clientProcessCmd(String cmd){
@@ -71,7 +71,7 @@ public class SocketThread implements Runnable{
             result = "query "+tableManager.getInetAddress(tableName) +" "+ tableName;
         } else if (cmd.startsWith("create")) { // create table_name
             tableName = cmd.substring(7);
-            result = "create "+tableManager.getIdealServer() + " " +tableName;
+            result = "create "+tableManager.getIdealServer()+ " " +tableName;
         }
         return result;
     }
