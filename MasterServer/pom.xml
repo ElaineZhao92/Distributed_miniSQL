@@ -53,5 +53,10 @@
           <artifactId>log4j</artifactId>
           <version>1.2.12</version>
       </dependency>
+      <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-unix-common</artifactId>
+          <version>4.1.73.Final</version>
+      </dependency>
   </dependencies>
 </project>

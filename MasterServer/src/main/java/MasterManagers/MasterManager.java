@@ -9,8 +9,6 @@ public class MasterManager {
     private SocketManager socketManager;
     private TableManager tableManager;
 
-//    private final int PORT = 12345;
-
     private final int PORT = 12345;
 
     public MasterManager() throws IOException, InterruptedException {
