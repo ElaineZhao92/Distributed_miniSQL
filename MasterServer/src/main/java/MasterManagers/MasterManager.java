@@ -11,7 +11,7 @@ public class MasterManager {
 
 //    private final int PORT = 12345;
 
-    private final int PORT = 4866;
+    private final int PORT = 12345;
 
     public MasterManager() throws IOException, InterruptedException {
         tableManager = new TableManager();

@@ -17,7 +17,7 @@ public class MasterSocketManager implements Runnable {
     private DatabaseManager dataBaseManager;
     private boolean isRunning = false;
 
-    public final int SERVER_PORT = 4866;
+    public final int SERVER_PORT = 12345;
     public final String MASTER = "localhost";
 
     public MasterSocketManager() throws IOException {
