@@ -18,7 +18,7 @@ public class RegionServer implements Runnable {
         zookeeperManager = new ZookeeperServiceManager();
         masterSocketManager = new MasterSocketManager();
         clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
-        masterSocketManager.sendToMaster(dataBaseManager.getMetaInfo());
+        masterSocketManager.sendTableInfoToMaster(dataBaseManager.getMetaInfo());
         new Thread(clientSocketManager).start();
     }
 

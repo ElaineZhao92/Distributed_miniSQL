@@ -1,8 +1,8 @@
 package MasterManagers.SocketManager;
 
 import MasterManagers.TableManager;
+import MasterManagers.utils.SocketUtils;
 import com.google.common.collect.Table;
-import io.netty.util.internal.SocketUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.plaf.synth.Region;
@@ -21,10 +21,16 @@ public class RegionCMD {
     public String processRegionCommand(String cmd){
         String result = "";
         String ip = socket.getInetAddress().getHostAddress();
+        System.out.println(cmd);
+
         if(ip.equals("127.0.0.1"))
-            ip = SocketUtils.loopbackAddress().getHostAddress();
+            ip = SocketUtils.getHostAddress();
+
+        System.out.println(ip);
+
         if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
+            System.out.println("------add server ok-----");
             String[] allTable = cmd.substring(6).split(" ");
             for(String temp : allTable) {
                 tableManager.addTable(temp, ip);

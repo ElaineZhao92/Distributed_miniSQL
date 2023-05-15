@@ -15,12 +15,15 @@ public class ClientCMD {
     public String processClientCommand(String cmd){
         String result = "";
         String tableName = "";
+        System.out.println(cmd);
         if (cmd.startsWith("query")) { // query table_name
             tableName = cmd.substring(6); // 空格
             result = "query "+tableManager.getInetAddress(tableName) +" "+ tableName;
+            System.out.println(result);
         } else if (cmd.startsWith("create")) { // create table_name
             tableName = cmd.substring(7);
             result = "create "+tableManager.getIdealServer() + " " +tableName;
+            System.out.println(result);
         }
         return result;
     }

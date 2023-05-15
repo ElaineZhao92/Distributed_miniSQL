@@ -35,6 +35,7 @@ public class TableManager {
         Integer min = Integer.MAX_VALUE;
         String result = "";
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            System.out.println(entry.getKey());
             if(entry.getValue().size() < min){
                 min = entry.getValue().size();
                 result = entry.getKey();
@@ -47,6 +48,7 @@ public class TableManager {
         Integer min = Integer.MAX_VALUE;
         String result = "";
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            System.out.println(entry.getKey());
             if(!entry.getKey().equals(hostURL) && entry.getValue().size()<min){
                 min = entry.getValue().size();
                 result = entry.getKey();

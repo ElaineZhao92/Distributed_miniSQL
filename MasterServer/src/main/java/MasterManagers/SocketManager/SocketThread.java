@@ -55,10 +55,14 @@ public class SocketThread implements Runnable{
     public void processCmd(String cmd){
         log.warn(cmd);
         String result = "";
-        if(cmd.startsWith("[client]"))
+        if(cmd.startsWith("[client]")) {
+            System.out.println(cmd);
             result = clientCMD.processClientCommand(cmd.substring(9));
-        else if(cmd.startsWith("[region]"))
+        }
+        else if(cmd.startsWith("[region]")) {
+            System.out.println(cmd);
             result = regionCMD.processRegionCommand(cmd.substring(9));   // 如果这里没有空格 那么就8
+        }
 
         if(!result.equals(""))
             this.sendToRegion(result);
