@@ -41,11 +41,11 @@ public class MasterSocketManager {
     // 像主服务器发送信息的api
     // 要加上client标签，可以被主服务器识别
     public void sendToMaster(String info) {
-        output.println("<client>[1]" + info);
+        output.println("[client] query " + info );
     }
 
     public void sendToMasterCreate(String info) {
-        output.println("<client>[2]" + info);
+        output.println("[client] create " + info);
     }
 
     // 接收来自master server的信息并显示
@@ -75,10 +75,10 @@ public class MasterSocketManager {
                 }
             }
             // 主节点通信协议的解析方案
-            else if (line.startsWith("<master>[1]") || line.startsWith("<master>[2]")) {
+            else if (line.startsWith("[master]")) {
                 // 截取ip地址
-                String[] args = line.substring(11).split(" ");
-                String ip = args[0], table = args[1];
+                String[] args = line.split(" ");
+                String ip = args[3], table = "";
                 this.clientManager.cacheManager.setCache(table, ip);
                 this.clientManager.connectToRegion(ip, commandMap.get(table));
             }
