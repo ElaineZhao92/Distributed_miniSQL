@@ -84,6 +84,7 @@ class Client implements Runnable{
 
     public boolean getResult (String sql,String ip,String res) throws Exception {
         boolean flag=false;
+
         //处理sql语句
         String result=Interpreter.interpret(sql);
         //保存catalog到文件中
