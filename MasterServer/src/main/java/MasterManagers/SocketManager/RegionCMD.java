@@ -56,25 +56,27 @@ public class RegionCMD {
 //        }
         if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
-            System.out.println("------add server ok-----");
-
-        } else if ( cmd.startsWith("query") && tableManager.hasServer(ip)){
-            String[] allTable = cmd.substring(6).split(" ");
+            String[] allTable = cmd.substring(3).split(" ");
             for(String temp : allTable) {
                 tableManager.addTable(temp, ip);
             }
-        }
-        else if (cmd.startsWith("add")) {
-            // [region] add/delete table_name 情况
-            String tableName = cmd.substring(4);
-            tableManager.addTable(tableName,ip);
-            result += "add Table" + tableName + "\n";
+            System.out.println("------add server ok-----");
 
-        } else if (cmd.startsWith("delete")) {
-            String tableName = cmd.substring(7);
-            tableManager.deleteTable(tableName,ip);
-            result += "delete Table" + tableName + "\n";
-
+        } else if (cmd.startsWith("create")) {
+            cmd.substring(7);
+            if(cmd.startsWith("add")) {
+                // [region] create add/delete table_name 情况
+                String tableName = cmd.substring(4);
+                tableManager.addTable(tableName,ip);
+                result += "add Table" + tableName + "\n";
+                System.out.println("result = " + result);
+            }
+            else if(cmd.startsWith("delete")){
+                String tableName = cmd.substring(7);
+                tableManager.deleteTable(tableName,ip);
+                result += "delete Table" + tableName + "\n";
+                System.out.println("result = " + result);
+            }
         } else if (cmd.startsWith("drop")){
             log.warn("完成从节点的数据转移");
 
