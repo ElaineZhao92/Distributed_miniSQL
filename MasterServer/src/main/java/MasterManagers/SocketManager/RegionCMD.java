@@ -29,31 +29,6 @@ public class RegionCMD {
 
         System.out.println(ip);
 
-//        if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
-//            tableManager.addServer(ip);
-//            System.out.println("------add server ok-----");
-//            String[] allTable = cmd.substring(6).split(" ");
-//            System.out.println(allTable);
-//            for(String temp : allTable) {
-//                tableManager.addTable(temp, ip);
-//            }
-//        }
-//        if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
-//            tableManager.addServer(ip);
-//            System.out.println("------add server ok-----");
-//
-//        } else if ( cmd.startsWith("query") && tableManager.hasServer(ip)){
-//            String[] allTable = cmd.substring(6).split(" ");
-////            int i = 0;
-//            System.out.println("cmd::" + cmd);
-//            System.out.println(allTable[0]);
-//            for(String temp : allTable) {
-//                System.out.println("ok");
-//                System.out.println(temp);
-//
-//                tableManager.addTable(temp, ip);
-//            }
-//        }
         if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
             String[] allTable = cmd.substring(3).split(" ");

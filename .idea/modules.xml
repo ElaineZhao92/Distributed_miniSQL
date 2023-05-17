@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Distributed_miniSQL.iml" filepath="$PROJECT_DIR$/Distributed_miniSQL.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MasterServer/MasterServer.iml" filepath="$PROJECT_DIR$/MasterServer/MasterServer.iml" />
     </modules>
   </component>
 </project>

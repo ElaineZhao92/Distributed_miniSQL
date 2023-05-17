@@ -13,18 +13,14 @@ public class RegionServer implements Runnable {
 
     private final int PORT = 22222;
 
-    public RegionServer() throws IOException{
+    public RegionServer() throws IOException, InterruptedException{
         dataBaseManager = new DatabaseManager();
         zookeeperManager = new ZookeeperServiceManager();
         masterSocketManager = new MasterSocketManager();
-        clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
         masterSocketManager.sendTableInfoToMaster(dataBaseManager.getMetaInfo());
-        new Thread(clientSocketManager).start();
-    }
-
-    public static void main(String[] args) throws IOException {
-        RegionServer regionServer=new RegionServer();
-        new Thread(regionServer).start();
+        clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
+        Thread centerThread = new Thread(clientSocketManager);
+        centerThread.start();
     }
 
     public void run() {
