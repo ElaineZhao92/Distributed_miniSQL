@@ -21,21 +21,50 @@ public class RegionCMD {
     public String processRegionCommand(String cmd){
         String result = "";
         String ip = socket.getInetAddress().getHostAddress();
-        System.out.println(cmd);
+        System.out.println("ip::::::" + ip);
+        System.out.println("cmd::::::" + cmd);
 
         if(ip.equals("127.0.0.1"))
             ip = SocketUtils.getHostAddress();
 
         System.out.println(ip);
 
+//        if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
+//            tableManager.addServer(ip);
+//            System.out.println("------add server ok-----");
+//            String[] allTable = cmd.substring(6).split(" ");
+//            System.out.println(allTable);
+//            for(String temp : allTable) {
+//                tableManager.addTable(temp, ip);
+//            }
+//        }
+//        if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
+//            tableManager.addServer(ip);
+//            System.out.println("------add server ok-----");
+//
+//        } else if ( cmd.startsWith("query") && tableManager.hasServer(ip)){
+//            String[] allTable = cmd.substring(6).split(" ");
+////            int i = 0;
+//            System.out.println("cmd::" + cmd);
+//            System.out.println(allTable[0]);
+//            for(String temp : allTable) {
+//                System.out.println("ok");
+//                System.out.println(temp);
+//
+//                tableManager.addTable(temp, ip);
+//            }
+//        }
         if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
             System.out.println("------add server ok-----");
+
+        } else if ( cmd.startsWith("query") && tableManager.hasServer(ip)){
             String[] allTable = cmd.substring(6).split(" ");
             for(String temp : allTable) {
                 tableManager.addTable(temp, ip);
             }
-        } else if (cmd.startsWith("add")) {
+        }
+        else if (cmd.startsWith("add")) {
             // [region] add/delete table_name 情况
             String tableName = cmd.substring(4);
             tableManager.addTable(tableName,ip);

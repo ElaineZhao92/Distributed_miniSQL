@@ -74,11 +74,16 @@ public class TableManager {
     }
 
     public String getInetAddress(String table){
+        System.out.println("-----getInetAddress::-----");
         for(Map.Entry<String, String> entry : TableInfo.entrySet()){
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
             if(entry.getKey().equals(table)){
                 return entry.getValue();
             }
         }
+
+        System.out.println("-------------------------");
         return null;
     }
 
@@ -98,6 +103,8 @@ public class TableManager {
     // ---------- 有关 table 的------------
 
     public void addTable(String table, String ip){
+        System.out.println("------addTable::-------");
+        System.out.println(table + "," + ip);
         TableInfo.put(table,ip);
         // 如果当前的ip已存在活跃列表中，那么将table计入其对应的list里保存。
         if(liveServer.containsKey(ip))

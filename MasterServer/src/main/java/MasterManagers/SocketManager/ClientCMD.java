@@ -13,11 +13,13 @@ public class ClientCMD {
     }
 
     public String processClientCommand(String cmd){
+        System.out.println("Master-processClientCommand::" + cmd);
         String result = "";
         String tableName = "";
         System.out.println(cmd);
         if (cmd.startsWith("query")) { // query table_name
             tableName = cmd.substring(6); // 空格
+            System.out.println("tableName::" + tableName);
             result = "query "+tableManager.getInetAddress(tableName) +" "+ tableName;
             System.out.println(result);
         } else if (cmd.startsWith("create")) { // create table_name
