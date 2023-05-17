@@ -21,7 +21,7 @@ public class MasterSocketManager {
     private ClientManager clientManager;
 
     // 服务器的IP和端口号
-    private final String master = "10.181.194.178";
+    private final String master = "10.192.169.124";
     private final int PORT = 12345;
 
     // 使用map来存储需要处理的表名-sql语句的对应关系
@@ -54,12 +54,12 @@ public class MasterSocketManager {
     public void receiveFromMaster() throws IOException, InterruptedException {
         String line = null;
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-            System.out.println("CIENT>>>Socket closed !");
+            System.out.println("CLIENT>>>Socket closed !");
         } else {
             line = input.readLine();
         }
         if (line != null) {
-            System.out.println("CIENT>>>Info from master is: " + line);
+            System.out.println("CLIENT>>>Info from master is: " + line);
             // 已经废弃的方案
             if (line.startsWith("<table>")) {
                 String[] args = line.substring(7).split(" ");

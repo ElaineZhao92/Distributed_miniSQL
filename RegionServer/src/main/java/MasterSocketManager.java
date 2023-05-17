@@ -34,7 +34,7 @@ public class MasterSocketManager implements Runnable {
     }
     // ??????不在报告里，不知道在干啥，好像是RegionManager测试的时候用的
     public void sendTableInfoToMaster(String table_info) {
-        output.println("<region> query " + table_info);
+        output.println("[region] query " + table_info);
     }
 
     public void receiveFromMaster() throws IOException {

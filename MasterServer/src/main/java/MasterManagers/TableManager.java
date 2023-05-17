@@ -87,14 +87,6 @@ public class TableManager {
         return null;
     }
 
-    public SocketThread getSocketThread(String hostUrl) {
-        for(Map.Entry<String, SocketThread> entry : socketThreadMap.entrySet()){
-            if(entry.getKey().equals(hostUrl))
-                return entry.getValue();
-        }
-        return null;
-    }
-
     public void recoverServer(String hostUrl) {
         List<String> temp = new ArrayList<>();
         liveServer.put(hostUrl,temp);
@@ -140,4 +132,17 @@ public class TableManager {
         }
         return null;
     }
+
+    //--------------------Socket---------------------
+    public void addSocketThread(String hostUrl, SocketThread socketThread) {
+        socketThreadMap.put(hostUrl,socketThread);
+    }
+    public SocketThread getSocketThread(String hostUrl) {
+        for(Map.Entry<String, SocketThread> entry : socketThreadMap.entrySet()){
+            if(entry.getKey().equals(hostUrl))
+                return entry.getValue();
+        }
+        return null;
+    }
+
 }
