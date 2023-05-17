@@ -13,7 +13,7 @@ public class RegionServer implements Runnable {
 
     private final int PORT = 22222;
 
-    public RegionServer() throws IOException, InterruptedException{
+    public RegionServer() throws IOException{
         dataBaseManager = new DatabaseManager();
         zookeeperManager = new ZookeeperServiceManager();
         masterSocketManager = new MasterSocketManager();
@@ -21,6 +21,11 @@ public class RegionServer implements Runnable {
         clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
         Thread centerThread = new Thread(clientSocketManager);
         centerThread.start();
+    }
+
+    public static void main(String[] args) throws IOException {
+        RegionServer regionServer=new RegionServer();
+        new Thread(regionServer).start();
     }
 
     public void run() {
