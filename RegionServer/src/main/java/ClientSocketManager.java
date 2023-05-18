@@ -18,20 +18,22 @@ import miniSQL.Interpreter;
 public class ClientSocketManager implements Runnable{
     private MasterSocketManager masterSocketManager;
     private ServerSocket serversocket;
-
+    private HashMap<Socket,Thread> clientHashMap;
     ClientSocketManager(int port, MasterSocketManager masterSocketManager) throws IOException{
         this.serversocket=new ServerSocket(port);
         this.masterSocketManager=masterSocketManager;
+        this.clientHashMap=new HashMap<Socket,Thread>();
     }
 
     //不断循环连接客户端
     public void run(){
         while(true){
-            Socket socket;
             try {
-                socket = serversocket.accept();
+                Socket socket = serversocket.accept();
                 Client client=new Client(socket,masterSocketManager);
-                new Thread(client).start();
+                Thread thread=new Thread(client);
+                this.clientHashMap.put(socket,thread);
+                thread.run();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -49,9 +51,9 @@ class Client implements Runnable{
     private PrintWriter output;
     private FtpUtils ftpUtils;
 
-    Client(Socket socket,MasterSocketManager masterSockerManager) throws IOException{
+    Client(Socket socket,MasterSocketManager masterSocketManager) throws IOException{
         this.socket=socket;
-        this.masterSocketManager=masterSockerManager;
+        this.masterSocketManager=masterSocketManager;
         this.ftpUtils=new FtpUtils();
         this.input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output=new PrintWriter(socket.getOutputStream(),true);
@@ -60,9 +62,8 @@ class Client implements Runnable{
     //不断循环处理sql语句
     public void run(){
         while(true){
-            String sql;
             try {
-                sql = input.readLine();
+                String sql = input.readLine();
                 if(sql!=null){
                     String res=""; //sql语句处理后的结果
                     boolean isTableModified=getResult(sql,socket.getInetAddress().toString(),res);
@@ -96,8 +97,9 @@ class Client implements Runnable{
         ftpUtils.uploadFile("index_catalog", SocketUtils.getHostAddress(), "catalog");
         
         String[] sqls=sql.split(" ");
+        String[] results=result.split(" ");
         String keyword=sqls[0].toLowerCase();
-        String tablename=sqls[2]; //除了select语句，所有表名都在第三个String
+        String tablename=results[2]; //除了select语句，所有表名都在第三个String
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
             sendToFTP(tablename);

@@ -19,13 +19,12 @@ public class RegionServer implements Runnable {
         masterSocketManager = new MasterSocketManager();
         masterSocketManager.sendTableInfoToMaster(dataBaseManager.getMetaInfo());
         clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
-        Thread centerThread = new Thread(clientSocketManager);
-        centerThread.start();
+        clientSocketManager.run();
     }
 
     public static void main(String[] args) throws IOException {
         RegionServer regionServer=new RegionServer();
-        new Thread(regionServer).start();
+        regionServer.run();
     }
 
     public void run() {
