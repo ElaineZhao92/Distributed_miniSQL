@@ -1,7 +1,7 @@
 package MasterManagers.SocketManager;
 
 import MasterManagers.TableManager;
-import io.netty.util.internal.SocketUtils;
+import MasterManagers.utils.SocketUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -31,9 +31,11 @@ public class SocketManager {
             Socket socket = serverSocket.accept();
             SocketThread socketThread = new SocketThread(socket, tableManager);
             String ip = socket.getInetAddress().getHostAddress();
+
             if(ip.equals("127.0.0.1"))
-                ip = SocketUtils.loopbackAddress().getHostAddress();
-                // ip = SocketUtils.getHostAddress();
+                ip = SocketUtils.getHostAddress();
+
+            tableManager.addSocketThread(ip, socketThread);
             Thread thread = new Thread(socketThread);
             thread.start();
         }

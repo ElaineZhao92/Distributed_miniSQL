@@ -7,12 +7,6 @@
 *.index
 out
 gen
-/Client/target/classes/ClientManager/CacheManager.class
-/Client/target/classes/Client.class
-/Client/target/classes/ClientManager/ClientManager.class
-/Client/target/classes/ClientManager/MasterSocketManager$InfoListener.class
-/Client/target/classes/ClientManager/MasterSocketManager.class
-/Client/target/classes/ClientManager/RegionSocketManager$InfoListener.class
-/Client/target/classes/ClientManager/RegionSocketManager.class
-/MasterServer/target/classes/MasterManagers/utils/ServiceMonitor$1.class
-/MasterServer/target/classes/MasterManagers/utils/ServiceStrategyExecutor$1.class
+/Client/target/
+/MasterServer/target/
+/RegionServer/target/

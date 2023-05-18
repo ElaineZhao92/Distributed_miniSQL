@@ -84,6 +84,7 @@ class Client implements Runnable{
 
     public boolean getResult (String sql,String ip,String res) throws Exception {
         boolean flag=false;
+
         //处理sql语句
         String result=Interpreter.interpret(sql);
         //保存catalog到文件中
@@ -100,13 +101,13 @@ class Client implements Runnable{
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
             sendToFTP(tablename);
-            res="[region] add "+tablename;
+            res="[region] create add "+tablename;
             flag=true;
         }
         else if(keyword.equals("drop")){ //删表
             //把表名从ftp上删除
             deleteFromFTP(tablename);
-            res="[region] delete "+tablename;
+            res="[region] create delete "+tablename;
             flag=true;
         }
         else if(keyword.equals("insert")||keyword.equals("delete")){ //记录的增删

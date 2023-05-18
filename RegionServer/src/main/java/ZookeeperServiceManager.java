@@ -1,15 +1,16 @@
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.zookeeper.CreateMode;
 import MasterManagers.ZookeeperManager;
 import MasterManagers.utils.CuratorHolder;
 import MasterManagers.utils.SocketUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.CreateMode;
 
+
+import java.util.Enumeration;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 
 @Slf4j
 public class ZookeeperServiceManager implements Runnable {
@@ -19,8 +20,7 @@ public class ZookeeperServiceManager implements Runnable {
     }
 
     private void serviceRegister() {
-        try {
-            // 向ZooKeeper注册临时节点
+        try { // 向ZooKeeper注册临时节点
             CuratorHolder curatorClientHolder = new CuratorHolder();
             int nChildren = curatorClientHolder.getChildren(ZookeeperManager.ZNODE).size();
             if(nChildren==0)
@@ -30,18 +30,13 @@ public class ZookeeperServiceManager implements Runnable {
                 curatorClientHolder.createNode(getRegisterPath() + index, SocketUtils.getHostAddress(), CreateMode.EPHEMERAL);
             }
 
-            // 阻塞该线程，直到发生异常或者主动退出
-            synchronized (this) {
+            synchronized (this) { // 阻塞该线程，直到主动退出或者发生异常
                 wait();
             }
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
         }
     }
-
-    /**
-     * @description: 获取Zookeeper注册的路径
-     */
     private static String getRegisterPath() {
         return ZookeeperManager.ZNODE + "/" + ZookeeperManager.HOST_NAME_PREFIX;
     }

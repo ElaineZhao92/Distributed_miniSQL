@@ -58,6 +58,7 @@ public class ClientManager {
 
             // 获得目标表名和索引名
             String command = sql.toString();
+            System.out.println("command");
             sql = new StringBuilder();
             Map<String, String> target = this.sqlParser(command);
             if (target.containsKey("error")) {

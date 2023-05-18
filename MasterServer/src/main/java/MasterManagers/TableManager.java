@@ -35,6 +35,7 @@ public class TableManager {
         Integer min = Integer.MAX_VALUE;
         String result = "";
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            System.out.println(entry.getKey());
             if(entry.getValue().size() < min){
                 min = entry.getValue().size();
                 result = entry.getKey();
@@ -47,6 +48,7 @@ public class TableManager {
         Integer min = Integer.MAX_VALUE;
         String result = "";
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            System.out.println(entry.getKey());
             if(!entry.getKey().equals(hostURL) && entry.getValue().size()<min){
                 min = entry.getValue().size();
                 result = entry.getKey();
@@ -72,19 +74,16 @@ public class TableManager {
     }
 
     public String getInetAddress(String table){
+        System.out.println("-----getInetAddress::-----");
         for(Map.Entry<String, String> entry : TableInfo.entrySet()){
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
             if(entry.getKey().equals(table)){
                 return entry.getValue();
             }
         }
-        return null;
-    }
 
-    public SocketThread getSocketThread(String hostUrl) {
-        for(Map.Entry<String, SocketThread> entry : socketThreadMap.entrySet()){
-            if(entry.getKey().equals(hostUrl))
-                return entry.getValue();
-        }
+        System.out.println("-------------------------");
         return null;
     }
 
@@ -96,6 +95,8 @@ public class TableManager {
     // ---------- 有关 table 的------------
 
     public void addTable(String table, String ip){
+        System.out.println("------addTable::-------");
+        System.out.println(table + "," + ip);
         TableInfo.put(table,ip);
         // 如果当前的ip已存在活跃列表中，那么将table计入其对应的list里保存。
         if(liveServer.containsKey(ip))
@@ -131,4 +132,17 @@ public class TableManager {
         }
         return null;
     }
+
+    //--------------------Socket---------------------
+    public void addSocketThread(String hostUrl, SocketThread socketThread) {
+        socketThreadMap.put(hostUrl,socketThread);
+    }
+    public SocketThread getSocketThread(String hostUrl) {
+        for(Map.Entry<String, SocketThread> entry : socketThreadMap.entrySet()){
+            if(entry.getKey().equals(hostUrl))
+                return entry.getValue();
+        }
+        return null;
+    }
+
 }

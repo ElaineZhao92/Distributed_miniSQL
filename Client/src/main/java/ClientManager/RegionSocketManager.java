@@ -13,7 +13,7 @@ public class RegionSocketManager {
     private boolean isRunning = false;
     private Thread infoListener;
 
-    private String region = "localhost";
+    private String region = "10.181.215.193";
 
     public RegionSocketManager() {
 

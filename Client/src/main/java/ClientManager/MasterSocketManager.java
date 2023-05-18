@@ -21,8 +21,8 @@ public class MasterSocketManager {
     private ClientManager clientManager;
 
     // 服务器的IP和端口号
-    private final String master = "localhost";
-    private final int PORT = 4866;
+    private final String master = "10.181.193.235";
+    private final int PORT = 12345;
 
     // 使用map来存储需要处理的表名-sql语句的对应关系
     Map<String, String> commandMap = new HashMap<>();
@@ -102,7 +102,8 @@ public class MasterSocketManager {
             else if (line.startsWith("[master]")) {
                 // 截取ip地址
                 String[] args = line.split(" ");
-                String ip = args[3], table = "";
+                System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
+                String ip = args[2], table = args[3];
                 this.clientManager.cacheManager.setCache(table, ip);
                 this.clientManager.connectToRegion(ip, commandMap.get(table));
             }

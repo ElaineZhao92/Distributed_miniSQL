@@ -17,9 +17,10 @@ public class RegionServer implements Runnable {
         dataBaseManager = new DatabaseManager();
         zookeeperManager = new ZookeeperServiceManager();
         masterSocketManager = new MasterSocketManager();
+        masterSocketManager.sendTableInfoToMaster(dataBaseManager.getMetaInfo());
         clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
-        masterSocketManager.sendToMaster(dataBaseManager.getMetaInfo());
-        new Thread(clientSocketManager).start();
+        Thread centerThread = new Thread(clientSocketManager);
+        centerThread.start();
     }
 
     public static void main(String[] args) throws IOException {
