@@ -85,21 +85,21 @@ public class MasterSocketManager {
                 System.out.println(line);
             }
             // 已经废弃的方案
-            if (line.startsWith("<table>")) {
-                String[] args = line.substring(7).split(" ");
-                String sql = commandMap.get(args[0]);
-                System.out.println(sql);
-                // 如果查到的端口号有对应的表
-                if (sql != null) {
-                    int PORT = Integer.parseInt(args[1]);
-                    commandMap.remove(args[0]);
-                    // 查询到之后在client的cache中设置一个缓存
-                    this.clientManager.cacheManager.setCache(args[0], String.valueOf(PORT));
-                    this.clientManager.connectToRegion(PORT, sql);
-                }
-            }
+            // if (line.startsWith("<table>")) {
+            //     String[] args = line.substring(7).split(" ");
+            //     String sql = commandMap.get(args[0]);
+            //     System.out.println(sql);
+            //     // 如果查到的端口号有对应的表
+            //     if (sql != null) {
+            //         int PORT = Integer.parseInt(args[1]);
+            //         commandMap.remove(args[0]);
+            //         // 查询到之后在client的cache中设置一个缓存
+            //         this.clientManager.cacheManager.setCache(args[0], String.valueOf(PORT));
+            //         this.clientManager.connectToRegion(PORT, sql);
+            //     }
+            // }
             // 主节点通信协议的解析方案
-            else if (line.startsWith("[master]")) {
+            if (line.startsWith("[master]")) {
                 // 截取ip地址
                 String[] args = line.split(" ");
                 System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
@@ -130,7 +130,7 @@ public class MasterSocketManager {
     public void processCreate(String sql, String table) {
         this.commandMap.put(table, sql);
         // 用<table>前缀表示要查某个表名对应的端口号
-        System.out.println("the sql is: " + sql + " the table is: " + table);
+        System.out.println( " create the table : " + table);
         this.sendToMasterCreate(table);
     }
 

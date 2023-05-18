@@ -70,30 +70,41 @@ public class ClientManager {
             System.out.println("CLIENT>>>the table is: " + table);
 
             if (target.get("kind").equals("create")) {
+                //创表无cache 
                 this.masterSocketManager.processCreate(command, table);
             } else {
+                //有缓存的情况 进入表中查询
                 if (target.get("cache").equals("true")) {
                     cache = cacheManager.getCache(table);
                     if (cache == null) {
                         System.out.println("CLIENT>>>There is no corresponding cache for the table .");
                          // cache里面没有找到表所对应的端口号，去masterSocket里面查询
-                        this.masterSocketManager.process(command, table);
+                        // this.masterSocketManager.process(command, table);
                     } else {
-                        System.out.println("CLIENT>>>The server according to the cache is: " + cache);
-                        //查到了端口号就直接在RegionSocketManager中进行连接
-                        this.connectToRegion(cache, command);
+                        //终于查到了！直接在RegionSocketManager中进行连接
+                        System.out.println("CLIENT>>>The server according to the cache is: " + cache);   
+                        // this.connectToRegion(cache, command);
                     }
                 }
+                if (cache == null) {
+                    this.masterSocketManager.process(command, table);
+                } else {
+                    // 如果查到了端口号就直接在RegionSocketManager中进行连接
+                    this.connectToRegion(cache, command);
+                }
+
+
             }
         }
     }
 
     // use port connect to the region
-    public void connectToRegion(int PORT, String sql) throws IOException, InterruptedException {
-        this.regionSocketManager.connectRegionServer(PORT);
-        Thread.sleep(100);
-        this.regionSocketManager.sendToRegion(sql);
-    }
+    // drop
+    // public void connectToRegion(int PORT, String sql) throws IOException, InterruptedException {
+    //     this.regionSocketManager.connectRegionServer(PORT);
+    //     Thread.sleep(100);
+    //     this.regionSocketManager.sendToRegion(sql);
+    // }
 
     // use ip connect to the region ,端口号固定为22222
     public void connectToRegion(String ip, String sql) throws IOException, InterruptedException {

@@ -37,6 +37,6 @@ public class CacheManager {
      */
     public void setCache(String table, String server) {
         cache.put(table, server);
-        System.out.println("存入缓存：表名" + table + " 端口号：" + server);
+        System.out.println("存入缓存：table name" + table + " region IP:" + server);
     }
 }
