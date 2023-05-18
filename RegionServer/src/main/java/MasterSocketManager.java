@@ -29,10 +29,32 @@ public class MasterSocketManager implements Runnable {
         isRunning = true;
     }
 
+    @Override
+    public void run() {
+        System.out.println("新消息>>>从节点的主服务器监听线程启动！");
+        while (isRunning) {
+            if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
+                isRunning = false;
+                break;
+            }
+            try {
+                receiveFromMaster();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException | NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void sendToMaster(String modified_info) {
         output.println(modified_info);
     }
-    // ??????不在报告里，不知道在干啥，好像是RegionManager测试的时候用的
+    
     public void sendTableInfoToMaster(String table_info) {
         output.println("[region] query " + table_info);
     }
@@ -45,23 +67,24 @@ public class MasterSocketManager implements Runnable {
             line = input.readLine();
         }
         if (line != null) {
-            if (line.startsWith("[master] drop")) {
+            if (line.startsWith("[master] drop ")) {
                 String info = line.substring(14);
                 if(line.length()==14) return;
-                // [master] drop ip name name
-                String[] ini_tables = info.split(" ");
-                String[] tables = new String[2];
-                System.arraycopy(ini_tables, 1, tables, 0, 2);
+                // [master] drop ip name name ...
+                String[] tables = info.split(" ");
+                int i = 0;
                 for(String table : tables) {
+                    if (i < 2) continue;
                     delFile(table);
                     delFile(table + "_index.index");
                     ftpUtils.downLoadFile("table", table, "");
                     System.out.println("success " + table);
                     ftpUtils.downLoadFile("index", table + "_index.index", "");
                     System.out.println("success " + table + "_index.index");
+                    i++;
                 }
                 // String ip = info.split("#")[0];
-                String ip = ini_tables[1];
+                String ip = tables[2];
                 ftpUtils.additionalDownloadFile("catalog", ip + "#table_catalog");
                 ftpUtils.additionalDownloadFile("catalog", ip + "#index_catalog");
                 try {
@@ -94,27 +117,5 @@ public class MasterSocketManager implements Runnable {
     public void delFile(String fileName) {
         File file = new File(fileName);
         if (file.exists() && file.isFile()) file.delete();
-    }
-
-    @Override
-    public void run() {
-        System.out.println("新消息>>>从节点的主服务器监听线程启动！");
-        while (isRunning) {
-            if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-                isRunning = false;
-                break;
-            }
-            try {
-                receiveFromMaster();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException | NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
