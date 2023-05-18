@@ -32,7 +32,7 @@ public class CacheManager {
 
     /**
      * 在客户端缓存中存储已知的表和所在的服务器
-     * @param table 数据表的名称
+     * @param table 数据表的名称n
      * @param server 服务器的IP地址和端口号
      */
     public void setCache(String table, String server) {

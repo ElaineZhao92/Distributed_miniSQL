@@ -25,24 +25,24 @@ public class ClientManager {
         this.regionSocketManager = new RegionSocketManager();
     }
 
-    // 在客户端做一个简单的interpreter，先对sql语句进行一个简单的解析，然后在客户端缓存中查询表是否已经存在
+    // 在客户端做一个简单的sqlParser，先对sql语句进行一个简单的解析，然后在客户端缓存中查询表是否已经存在
     public void run()
             throws IOException, InterruptedException {
-        System.out.println("CIENT>>>Client start");
+        System.out.println("CLIENT>>>Client start");
         Scanner input = new Scanner(System.in);
         String line = "";
         while (true) {
             StringBuilder sql = new StringBuilder();
             // 读入一句完整的SQL语句
-            System.out.println("CIENT>>>please input the sql:");
+            System.out.println("CLIENT>>>please input the sql:");
             // System.out.print("DisMiniSQLCIENT>>>");
             while (line.isEmpty() || line.charAt(line.length() - 1) != ';') {
                 line = input.nextLine();
                 if (line.isEmpty()) {
-                    //System.out.print("          CIENT>>>");
+                    //System.out.print("          CLIENT>>>");
                     continue;
                 }
-                //System.out.print("          CIENT>>>");
+                //System.out.print("          CLIENT>>>");
                 sql.append(line);
                 sql.append(' ');
             }
@@ -59,14 +59,14 @@ public class ClientManager {
             // 获得目标表名和索引名
             String command = sql.toString();
             sql = new StringBuilder();
-            Map<String, String> target = this.interpreter(command);
+            Map<String, String> target = this.sqlParser(command);
             if (target.containsKey("error")) {
-                System.out.println("CIENT>>>the format is wrong, please try again!");
+                System.out.println("CLIENT>>>the format is wrong, please try again!");
             }
 
             String table = target.get("name");
             String cache = null;
-            System.out.println("CIENT>>>the table is: " + table);
+            System.out.println("CLIENT>>>the table is: " + table);
 
             if (target.get("kind").equals("create")) {
                 this.masterSocketManager.processCreate(command, table);
@@ -74,11 +74,11 @@ public class ClientManager {
                 if (target.get("cache").equals("true")) {
                     cache = cacheManager.getCache(table);
                     if (cache == null) {
-                        System.out.println("CIENT>>>There is no corresponding cache for the table .");
+                        System.out.println("CLIENT>>>There is no corresponding cache for the table .");
                          // cache里面没有找到表所对应的端口号，去masterSocket里面查询
                         this.masterSocketManager.process(command, table);
                     } else {
-                        System.out.println("CIENT>>>The server according to the cache is: " + cache);
+                        System.out.println("CLIENT>>>The server according to the cache is: " + cache);
                         //查到了端口号就直接在RegionSocketManager中进行连接
                         this.connectToRegion(cache, command);
                     }
@@ -101,7 +101,7 @@ public class ClientManager {
         this.regionSocketManager.sendToRegion(sql);
     }
     // parse the sql
-    private Map<String, String> interpreter(String sql) {
+    private Map<String, String> sqlParser(String sql) {
         // 粗略地解析需要操作的table和index的名字
         Map<String, String> result = new HashMap<>();
         result.put("cache", "true");

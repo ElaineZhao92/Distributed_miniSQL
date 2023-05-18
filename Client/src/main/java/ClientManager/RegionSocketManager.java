@@ -30,7 +30,7 @@ public class RegionSocketManager {
         output = new PrintWriter(socket.getOutputStream(), true);
         isRunning = true;
         this.listenToRegion();
-        System.out.println("CIENT>>>connect to region  "+this.region+" : " + PORT);
+        System.out.println("CLIENT>>>connect to region  "+this.region+" : " + PORT);
     }
 
     public void connectRegionServer(String ip) throws IOException {
@@ -40,19 +40,43 @@ public class RegionSocketManager {
         output = new PrintWriter(socket.getOutputStream(), true);
         isRunning = true;
         this.listenToRegion();
-        System.out.println("CIENT>>>connect to region  " + ip + " : 22222");
+        System.out.println("CLIENT>>>connect to region  " + ip + " : 22222");
     }
 
 
     public void receiveFromRegion() throws IOException {
         String line = new String("");
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-            System.out.println("CIENT>>>Socket closed !");
+            System.out.println("CLIENT>>>Socket closed !");
         } else {
             line = input.readLine();
         }
         if (line != null) {
-            System.out.println("CIENT>>>Info from region is: " + line);
+            if (line.contains("-->")){System.out.println("CLIENT>>>Info from master is: " + line);}
+            else{
+                String prompt="CLIENT>>>Info from master is: ";
+                System.out.printf(prompt);
+                for (int i=0;i<line.length();i++){
+                    System.out.printf("-");}
+                System.out.printf("\n");
+                for (int i=0;i<prompt.length();i++){
+                    System.out.printf(" ");}
+                    System.out.printf("| ");  
+                for(int i=0;i<line.length()-2;i++){
+                    if(i%2!=0){System.out.printf("*");}  
+                    else{System.out.printf(" ");}
+                }
+                System.out.printf("|");
+                System.out.printf("\n");
+                for (int i=0;i<prompt.length();i++){
+                    System.out.printf(" ");}
+                for (int i=0;i<line.length();i++){
+                    System.out.printf("-");}
+                System.out.printf("\n");
+                for (int i=0;i<prompt.length();i++){
+                    System.out.printf(" ");}
+                System.out.println(line);
+            }
         }
     }
 
@@ -78,7 +102,7 @@ public class RegionSocketManager {
     class InfoListener extends Thread {
         @Override
         public void run() {
-            System.out.println("CIENT>>>start listening to region!");
+            System.out.println("CLIENT>>>start listening to region!");
             while (isRunning) {
                 if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
                     isRunning = false;

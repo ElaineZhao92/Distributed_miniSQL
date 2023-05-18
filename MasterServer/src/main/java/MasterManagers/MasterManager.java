@@ -1,5 +1,6 @@
 package MasterManagers;
-import MasterManagers.SocketManager.*;
+
+import MasterManagers.SocketManager.SocketManager;
 
 import java.io.IOException;
 

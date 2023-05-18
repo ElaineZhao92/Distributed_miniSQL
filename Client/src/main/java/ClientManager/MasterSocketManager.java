@@ -54,12 +54,36 @@ public class MasterSocketManager {
     public void receiveFromMaster() throws IOException, InterruptedException {
         String line = null;
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-            System.out.println("CIENT>>>Socket closed !");
+            System.out.println("CLIENT>>>Socket closed !");
         } else {
             line = input.readLine();
         }
         if (line != null) {
-            System.out.println("CIENT>>>Info from master is: " + line);
+            if (line.contains("-->")){System.out.println("CLIENT>>>Info from master is: " + line);}
+            else{
+                String prompt="CLIENT>>>Info from master is: ";
+                System.out.printf(prompt);
+                for (int i=0;i<line.length();i++){
+                    System.out.printf("-");}
+                System.out.printf("\n");
+                for (int i=0;i<prompt.length();i++){
+                    System.out.printf(" ");}
+                    System.out.printf("| ");  
+                for(int i=0;i<line.length()-2;i++){
+                    if(i%2!=0){System.out.printf("*");}  
+                    else{System.out.printf(" ");}
+                }
+                System.out.printf("|");
+                System.out.printf("\n");
+                for (int i=0;i<prompt.length();i++){
+                    System.out.printf(" ");}
+                for (int i=0;i<line.length();i++){
+                    System.out.printf("-");}
+                System.out.printf("\n");
+                for (int i=0;i<prompt.length();i++){
+                    System.out.printf(" ");}
+                System.out.println(line);
+            }
             // 已经废弃的方案
             if (line.startsWith("<table>")) {
                 String[] args = line.substring(7).split(" ");
@@ -123,7 +147,7 @@ public class MasterSocketManager {
     class InfoListener extends Thread {
         @Override
         public void run() {
-            System.out.println("CIENT>>>start listening to master!");
+            System.out.println("CLIENT>>>start listening to master!");
             while (isRunning) {
                 if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
                     isRunning = false;
