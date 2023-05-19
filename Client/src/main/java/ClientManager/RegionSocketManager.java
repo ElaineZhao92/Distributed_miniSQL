@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
+import org.apache.commons.lang3.StringUtils;
 public class RegionSocketManager {
     public Socket socket = null;
     private BufferedReader input = null;
@@ -52,31 +52,21 @@ public class RegionSocketManager {
             line = input.readLine();
         }
         if (line != null) {
-            if (line.contains("-->")){System.out.println("CLIENT>>>Info from master is: " + line);}
-            else{
-                String prompt="CLIENT>>>Info from master is: ";
-                System.out.printf(prompt);
-                for (int i=0;i<line.length();i++){
-                    System.out.printf("-");}
-                System.out.printf("\n");
-                for (int i=0;i<prompt.length();i++){
-                    System.out.printf(" ");}
-                    System.out.printf("| ");  
-                for(int i=0;i<line.length()-2;i++){
-                    if(i%2!=0){System.out.printf("*");}  
-                    else{System.out.printf(" ");}
-                }
-                System.out.printf("|");
-                System.out.printf("\n");
-                for (int i=0;i<prompt.length();i++){
-                    System.out.printf(" ");}
-                for (int i=0;i<line.length();i++){
-                    System.out.printf("-");}
-                System.out.printf("\n");
-                for (int i=0;i<prompt.length();i++){
-                    System.out.printf(" ");}
-                System.out.println(line);
+            //print result
+            String prompt="CLIENT>>>Info from region is: ";
+            int width=10;//每个字段值10个空间
+        // if(line!=NULL){
+        if(line.contains("|")){
+            String []values=line.split("\\|");
+            for (int i=1;i<values.length;i++){
+                // values[i]=values[i].substring(1);
+                System.out.printf("|%s",StringUtils.center(values[i],width));
             }
+            System.out.printf("|%n");
+        }
+        else{
+            System.out.println(prompt+line);
+        }
         }
     }
 
