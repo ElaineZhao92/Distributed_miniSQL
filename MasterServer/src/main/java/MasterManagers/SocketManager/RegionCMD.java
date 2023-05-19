@@ -1,7 +1,9 @@
 package MasterManagers.SocketManager;
 
 import MasterManagers.TableManager;
+import MasterManagers.utils.ServiceStrategyExecutor;
 import MasterManagers.utils.SocketUtils;
+import MasterManagers.utils.StrategyTypeEnum;
 import com.google.common.collect.Table;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,11 +33,21 @@ public class RegionCMD {
 
         if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
-            String[] allTable = cmd.substring(3).split(" ");
+            String[] allTable = cmd.substring(6).split(" ");
             for(String temp : allTable) {
                 tableManager.addTable(temp, ip);
             }
             System.out.println("------add server ok-----");
+
+        } else if (cmd.startsWith("query") && tableManager.hasServer(ip) &&!tableManager.inLiveServer(ip)) {
+            System.out.println("-----not in Live Server------");
+            String[] allTable = cmd.substring(6).split(" ");
+            ServiceStrategyExecutor executor = new ServiceStrategyExecutor(tableManager);
+            executor.execStrategy(ip, StrategyTypeEnum.RECOVER);
+            System.out.println("------Exec Recover, add Tables okay!-----");
+            for(String temp : allTable) {
+                tableManager.addTable(temp, ip);
+            }
 
         } else if (cmd.startsWith("create")) {
             cmd.substring(7);

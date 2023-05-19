@@ -96,9 +96,10 @@ public class CuratorHolder {
      */
     public void monitorChildrenNodes(String targetPath,PathChildrenCacheListener listener) throws Exception {
         CuratorCache cache = CuratorCache.build(client, targetPath);
-        cache.start();
+//        cache.start();
         CuratorCacheListener listener2 = CuratorCacheListener.builder().forPathChildrenCache(targetPath, client, listener).build();
         cache.listenable().addListener(listener2);
+        cache.start();
     }
 
     /**
