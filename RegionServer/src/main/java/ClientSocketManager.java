@@ -29,12 +29,13 @@ public class ClientSocketManager implements Runnable{
     public void run(){
         while(true){
             try {
+                Thread.sleep(1000);
                 Socket socket = serversocket.accept();
                 Client client=new Client(socket,masterSocketManager);
                 Thread thread=new Thread(client);
                 this.clientHashMap.put(socket,thread);
-                thread.run();
-            } catch (IOException e) {
+                thread.start();
+            } catch (InterruptedException | IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -57,12 +58,16 @@ class Client implements Runnable{
         this.ftpUtils=new FtpUtils();
         this.input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output=new PrintWriter(socket.getOutputStream(),true);
+        System.out.println("服务端建立了新的客户端子线程：" + socket.getPort());
     }
 
     //不断循环处理sql语句
     public void run(){
+        System.out.println("服务器监听客户端消息中" + socket.getInetAddress() + socket.getPort());
+
         while(true){
             try {
+                Thread.sleep(Long.parseLong("1000"));
                 String sql = input.readLine();
                 if(sql!=null){
                     String res=""; //sql语句处理后的结果
@@ -85,7 +90,7 @@ class Client implements Runnable{
 
     public boolean getResult (String sql,String ip,String res) throws Exception {
         boolean flag=false;
-
+        System.out.println("要处理的命令：" + sql);
         //处理sql语句
         String result=Interpreter.interpret(sql);
         //保存catalog到文件中
@@ -98,35 +103,46 @@ class Client implements Runnable{
         
         String[] sqls=sql.split(" ");
         String[] results=result.split(" ");
-        String keyword=sqls[0].toLowerCase();
-        String tablename=results[2]; //除了select语句，所有表名都在第三个String
-        if(keyword.equals("create")){ //建表
+        String keyword=sqls[0];
+        System.out.println("keyword::" + keyword);
+        // .toLowerCase();
+//      String tablename=results[2]; //除了select语句，所有表名都在第三个String
+        if(keyword.equals("-->Create")){ //建表
             //表名保存到ftp上
-            sendToFTP(tablename);
-            res="[region] create add "+tablename;
+            sendToFTP(results[2]);
+            res="[region] create add "+results[2];
             flag=true;
+            return flag;
         }
-        else if(keyword.equals("drop")){ //删表
+        else if(keyword.equals("-->Drop")){ //删表
             //把表名从ftp上删除
-            deleteFromFTP(tablename);
-            res="[region] create delete "+tablename;
+            deleteFromFTP(results[2]);
+            res="[region] create delete "+results[2];
             flag=true;
+            return flag;
         }
-        else if(keyword.equals("insert")||keyword.equals("delete")){ //记录的增删
+        else if(keyword.equals("-->Insert")||keyword.equals("-->Delete")){ //记录的增删
             //从ftp上删掉旧的表，发送新的表
-            deleteFromFTP(tablename);
-            sendToFTP(tablename);
+            System.out.println("Insert/Delete::!!");
+            System.out.println(sqls[2]);
+            deleteFromFTP(sqls[2]);
+            sendToFTP(sqls[2]);
+            System.out.println("success");
+            flag = false;
+            return flag;
         }
 
-        return flag;
+        return false;
     }
 
     public void sendToFTP(String fileName) { //表名作为文件名
+        System.out.println("sendToFTP" + fileName);
         ftpUtils.uploadFile(fileName, "table");
         ftpUtils.uploadFile(fileName + "_index.index", "index");
     }
 
     public void deleteFromFTP(String fileName) {
+        System.out.println("deleteFromFTP" + fileName);
         ftpUtils.deleteFile(fileName, "table");
         ftpUtils.deleteFile(fileName + "_index.index", "index");
     }
