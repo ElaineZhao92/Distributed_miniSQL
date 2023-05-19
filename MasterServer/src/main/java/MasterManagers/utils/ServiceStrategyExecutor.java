@@ -38,6 +38,7 @@ public class ServiceStrategyExecutor {
 
     //主节点给负载小的从节点发送挂掉从节点的 ip 与所有的表
     private void execInvalidStrategy (String hostUrl) {
+        System.out.println("---Invalid：hostUrl----");
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
         //[master] drop ip name name
@@ -55,14 +56,15 @@ public class ServiceStrategyExecutor {
         }
         tableManager.exchangeTable(bestInet,hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(bestInet);
-        socketThread.sendToRegion("drop"+allTable);
+        socketThread.sendToRegion("drop "+allTable);
     }
 
     //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，
     private void execRecoverStrategy(String hostUrl) {
+        System.out.println("---Recover:hostUrl----");
         tableManager.recoverServer(hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
-        socketThread.sendToRegion("recover");
+        socketThread.sendToRegion("recover ");
     }
 
 

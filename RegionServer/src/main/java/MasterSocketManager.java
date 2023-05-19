@@ -18,7 +18,7 @@ public class MasterSocketManager implements Runnable {
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
-    public final String MASTER = "10.181.193.235";
+    public final String MASTER = "10.192.114.213";
 
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);
@@ -68,6 +68,7 @@ public class MasterSocketManager implements Runnable {
         }
         if (line != null) {
             if (line.startsWith("[master] drop ")) {
+                System.out.println("master::drop");
                 String info = line.substring(14);
                 if(line.length()==14) return;
                 // [master] drop ip name name ...
@@ -97,6 +98,7 @@ public class MasterSocketManager implements Runnable {
                 output.println("[region] drop successfully");
             }
             else if (line.equals("[master] recover")) {
+                System.out.println("master::recover");
                 String tableName = dataBaseManager.getMetaInfo();
                 String[] tableNames = tableName.split(" ");
                 for(String table: tableNames) {

@@ -64,6 +64,14 @@ public class TableManager {
         return false;
     }
 
+    public boolean inLiveServer(String hostURL) {
+        for (String key : liveServer.keySet()) {
+            if (hostURL.equals(liveServer.get(key)))
+                return true;
+        }
+        return false;
+    }
+
     public void addServer(String hostURL){
         if(!hasServer(hostURL)){
             serverList.add(hostURL);

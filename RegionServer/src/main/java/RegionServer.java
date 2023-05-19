@@ -13,7 +13,7 @@ public class RegionServer implements Runnable {
 
     private final int PORT = 22222;
 
-    public RegionServer() throws IOException{
+    public RegionServer() throws IOException, InterruptedException {
         dataBaseManager = new DatabaseManager();
         zookeeperManager = new ZookeeperServiceManager();
         masterSocketManager = new MasterSocketManager();
@@ -23,9 +23,9 @@ public class RegionServer implements Runnable {
         centerThread.start();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         RegionServer regionServer=new RegionServer();
-        new Thread(regionServer).start();
+        regionServer.run();
     }
 
     public void run() {
@@ -40,6 +40,6 @@ public class RegionServer implements Runnable {
         Thread MasterSocketThread = new Thread(masterSocketManager);
         MasterSocketThread.start();
 
-        System.out.println("region server start!");
+        System.out.println("从节点开始运行!");
     }
 }
