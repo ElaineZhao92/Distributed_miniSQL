@@ -66,31 +66,34 @@ public class ClientManager {
             }
 
             String table = target.get("name");
-            String cache = null;
+            String fcache = null;
+            String scache = null;
             System.out.println("CLIENT>>>the table is: " + table);
 
             if (target.get("kind").equals("create")) {
                 //创表无cache 
-                this.masterSocketManager.processCreate(command, table);
+                this.masterSocketManager.processCreate(command,target.get("kind"), table);
             } else {
                 //有缓存的情况 进入表中查询
                 if (target.get("cache").equals("true")) {
-                    cache = cacheManager.getCache(table);
-                    if (cache == null) {
+                    fcache = cacheManager.getfCache(table);
+                    if (fcache == null) {
                         System.out.println("CLIENT>>>There is no corresponding cache for the table .");
                          // cache里面没有找到表所对应的端口号，去masterSocket里面查询
                         // this.masterSocketManager.process(command, table);
                     } else {
                         //终于查到了！直接在RegionSocketManager中进行连接
-                        System.out.println("CLIENT>>>The server according to the cache is: " + cache);   
+                        System.out.println("CLIENT>>>The server according to the cache is: " + fcache);   
                         // this.connectToRegion(cache, command);
                     }
                 }
-                if (cache == null) {
-                    this.masterSocketManager.process(command, table);
+                if (fcache == null) {
+                    this.masterSocketManager.process(command,target.get("kind"), table);
                 } else {
                     // 如果查到了端口号就直接在RegionSocketManager中进行连接
-                    this.connectToRegion(cache, command);
+                    this.connectToRegion(fcache, command);
+                    scache = cacheManager.getsCache(table);
+                    this.connectToRegion(scache, command);
                 }
 
 

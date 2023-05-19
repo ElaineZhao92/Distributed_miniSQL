@@ -8,10 +8,12 @@ import java.util.Map;
  */
 public class CacheManager {
     //客户端缓存表 <table,server>
-    private Map<String, String> cache;
+    private Map<String, String> fcache;//主
+    private Map<String, String> scache;//副
 
     public CacheManager() {
-        this.cache = new HashMap<>();
+        this.fcache = new HashMap<>();
+        this.scache = new HashMap<>();
     }
 
     /**
@@ -19,24 +21,37 @@ public class CacheManager {
      * @param table 要查询的表名
      * @return
      */
-    public String getCache(String table) {
+    public String getfCache(String table) {
         /* 
         有缓存返回对应的server
         无缓存返回null 
         */
-        if (this.cache.containsKey(table)) {
-            return this.cache.get(table);
+        if (this.fcache.containsKey(table)) {
+            return this.fcache.get(table);
         }
         return null;
     }
-
+    public String getsCache(String table) {
+        /* 
+        有缓存返回对应的server
+        无缓存返回null 
+        */
+        if (this.scache.containsKey(table)) {
+            return this.scache.get(table);
+        }
+        return null;
+    }
     /**
      * 在客户端缓存中存储已知的表和所在的服务器
      * @param table 数据表的名称n
      * @param server 服务器的IP地址和端口号
      */
-    public void setCache(String table, String server) {
-        cache.put(table, server);
-        System.out.println("存入缓存：table name" + table + " region IP:" + server);
+    public void setfCache(String table, String server) {
+        fcache.put(table, server);
+        System.out.println("存入缓存：table name" + table + " 主region IP:" + server);
+    }
+    public void setsCache(String table, String server) {
+        scache.put(table, server);
+        System.out.println("存入缓存：table name" + table + " 副region IP:" + server);
     }
 }

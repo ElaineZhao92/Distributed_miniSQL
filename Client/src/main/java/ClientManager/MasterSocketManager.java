@@ -40,12 +40,12 @@ public class MasterSocketManager {
 
     // 像主服务器发送信息的api
     // 要加上client标签，可以被主服务器识别
-    public void sendToMaster(String info) {
-        output.println("[client] query " + info );
+    public void sendToMaster(String op, String table) {
+        output.println("[client] " + op+" "+ table);
     }
 
-    public void sendToMasterCreate(String info) {
-        output.println("[client] create " + info);
+    public void sendToMasterCreate(String op, String table) {
+        output.println("[client] " + op+" "+ table);
     }
 
     // 接收来自master server的信息并显示
@@ -93,9 +93,12 @@ public class MasterSocketManager {
                 // 截取ip地址
                 String[] args = line.split(" ");
                 System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
-                String ip = args[2], table = args[3];
-                this.clientManager.cacheManager.setCache(table, ip);
-                this.clientManager.connectToRegion(ip, commandMap.get(table));
+                String fip = args[1], sip=args[2],table = args[3];
+                this.clientManager.cacheManager.setfCache(table, fip);
+                this.clientManager.cacheManager.setsCache(table, fip);
+                //发送给主 副两个节点
+                this.clientManager.connectToRegion(fip, commandMap.get(table));
+                this.clientManager.connectToRegion(sip, commandMap.get(table));
             }
         }
 
@@ -110,18 +113,18 @@ public class MasterSocketManager {
     // 将sql语句发送到主服务器进一步处理，这里还有待进一步开发，目前仅供实验
     // 进一步开发在这个方法里面扩展
 
-    public void process(String sql, String table) {
+    public void process(String sql,String op, String table) {
         // 来处理sql语句
         this.commandMap.put(table, sql);
         // 用<table>前缀表示要查某个表名对应的端口号
-        this.sendToMaster(table);
+        this.sendToMaster(op,table);
     }
 
-    public void processCreate(String sql, String table) {
+    public void processCreate(String sql,String op, String table) {
         this.commandMap.put(table, sql);
         // 用<table>前缀表示要查某个表名对应的端口号
         System.out.println( " create the table : " + table);
-        this.sendToMasterCreate(table);
+        this.sendToMasterCreate(op,table);
     }
 
     // 关闭socket的方法，在输入quit的时候直接调用
