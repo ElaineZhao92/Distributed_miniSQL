@@ -21,7 +21,7 @@ public class MasterSocketManager {
     private ClientManager clientManager;
 
     // 服务器的IP和端口号
-    private final String master = "10.181.215.93";
+    private final String master = "10.181.250.194";
     private final int PORT = 12345;
 
     // 使用map来存储需要处理的表名-sql语句的对应关系

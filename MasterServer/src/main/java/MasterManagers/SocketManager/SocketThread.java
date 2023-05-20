@@ -65,10 +65,10 @@ public class SocketThread implements Runnable{
         }
 
         if(!result.equals(""))
-            this.sendToRegion(result);
+            this.send(result);
     }
 
-    public void sendToRegion(String result){
+    public void send(String result){
         output.println("[master] "+result);
     }
 
