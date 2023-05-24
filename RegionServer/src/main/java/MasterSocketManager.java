@@ -102,16 +102,19 @@ public class MasterSocketManager implements Runnable {
                 System.out.println("master::recover");
                 String tableName = dataBaseManager.getMetaInfo();
                 String[] tableNames = tableName.split(" ");
-                for(String table: tableNames) {
-                    Interpreter.interpret("drop table " + table + " ;");
-                    try {
-                        API.store();
-                        API.initial();
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
+                if(tableNames.length != 0) {
+                    for(String table: tableNames) {
+                        Interpreter.interpret("drop table " + table + " ;");
+                        try {
+                            API.store();
+                            API.initial();
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+
                 output.println("[region] recover successfully");
             }
             else if (line.equals("[master] copy")) {
