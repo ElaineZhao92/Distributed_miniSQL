@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-import io.netty.util.internal.SystemPropertyUtil;
 import lombok.SneakyThrows;
 import miniSQL.API;
 import miniSQL.Interpreter;
@@ -19,7 +18,7 @@ public class MasterSocketManager implements Runnable {
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
-    public final String MASTER = "10.192.54.120";
+    public final String MASTER = "10.181.231.230";
 
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);
@@ -57,7 +56,7 @@ public class MasterSocketManager implements Runnable {
     }
     
     public void sendTableInfoToMaster(String table_info) {
-        output.println("[region] query " + table_info);
+        output.println("[region] recover " + table_info);
     }
 
     public void receiveFromMaster() throws IOException {

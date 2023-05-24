@@ -34,17 +34,23 @@ public class TableManager {
      */
     public List<String> getIdealServer(){
         List<String> result = new ArrayList<>();
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()) {
+            System.out.println(entry.getKey());
+        }
+
         for (int i = 0 ; i < 2; i ++ ){
             Integer min = Integer.MAX_VALUE;
             for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
-                System.out.println(entry.getKey());
                 if(entry.getValue().size() < min){
+                    if(i == 1 && (entry.getKey() == result.get(0)))
+                        continue;
                     min = entry.getValue().size();
                     result.add(entry.getKey());
+                    System.out.println(entry.getKey());
                 }
             }
         }
-
+        System.out.println(result.get(0) + result.get(1));
         return result;
     }
 
