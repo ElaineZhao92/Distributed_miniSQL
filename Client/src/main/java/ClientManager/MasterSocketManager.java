@@ -64,6 +64,7 @@ public class MasterSocketManager {
             int width=10;//每个字段值10个空间
         // if(line!=NULL){
         if(line.contains("|")){
+            System.out.println(prompt);
             String []values=line.split("\\|");
             for (int i=1;i<values.length;i++){
                 // values[i]=values[i].substring(1);
@@ -93,12 +94,13 @@ public class MasterSocketManager {
                 // 截取ip地址
                 String[] args = line.split(" ");
                 System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
-                String fip = args[1], sip=args[2],table = args[3];
+                String fip = args[1], sip=args[2],table = args[3],op= args[0];
                 this.clientManager.cacheManager.setfCache(table, fip);
                 this.clientManager.cacheManager.setsCache(table, fip);
                 //发送给主 副两个节点
                 this.clientManager.connectToRegion(fip, commandMap.get(table));
-                this.clientManager.connectToRegion(sip, commandMap.get(table));
+                if(!op.equals("select")){
+                    this.clientManager.connectToRegion(sip, commandMap.get(table));}
             }
         }
 
