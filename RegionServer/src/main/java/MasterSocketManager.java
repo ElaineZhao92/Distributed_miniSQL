@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
+import io.netty.util.internal.SystemPropertyUtil;
 import lombok.SneakyThrows;
 import miniSQL.API;
 import miniSQL.Interpreter;
@@ -18,7 +19,7 @@ public class MasterSocketManager implements Runnable {
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
-    public final String MASTER = "10.181.250.194";
+    public final String MASTER = "10.192.54.120";
 
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);
@@ -67,6 +68,7 @@ public class MasterSocketManager implements Runnable {
             line = input.readLine();
         }
         if (line != null) {
+            System.out.println("receive from Master>> line::" + line);
             if (line.startsWith("[master] drop ")) {
                 System.out.println("master::drop");
                 String info = line.substring(14);
@@ -112,6 +114,14 @@ public class MasterSocketManager implements Runnable {
                     }
                 }
                 output.println("[region] recover successfully");
+            }
+            else if (line.equals("[master] copy")) {
+                System.out.println("master::copy");
+                String[] info = line.split(" ");
+                System.out.println("ip::" + info[2]);
+                System.out.println("table_name::" + info[3]);
+                Thread RegionSocketSendThread = new Thread(new RegionSocketSendManager(info[2], info[3], output));
+                RegionSocketSendThread.start();
             }
         }
     }
