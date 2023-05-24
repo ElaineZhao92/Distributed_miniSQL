@@ -1,6 +1,7 @@
 package MasterManagers;
 
 import MasterManagers.SocketManager.SocketThread;
+import com.google.common.collect.Table;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  * 记录当前活跃的ip，以及ip对应的table list
  * */
 public class TableManager {
-    private Map<String, String> TableInfo;
+    private Map<String, List<String>> TableInfo;  // table -> ip1 ip2
     private List<String> serverList;
     private Map<String, List<String>> liveServer; // Serverip -> table list
     private Map<String, SocketThread> socketThreadMap;  // ip -> socket
@@ -31,19 +32,34 @@ public class TableManager {
      * 找到当前最适合的Server 标准就是server对应的table list最少
      * @return
      */
-    public String getIdealServer(){
-        Integer min = Integer.MAX_VALUE;
-        String result = "";
-        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+    public List<String> getIdealServer(){
+        List<String> result = new ArrayList<>();
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()) {
             System.out.println(entry.getKey());
-            if(entry.getValue().size() < min){
-                min = entry.getValue().size();
-                result = entry.getKey();
+        }
+
+        for (int i = 0 ; i < 2; i ++ ){
+            Integer min = Integer.MAX_VALUE;
+            for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+                if(entry.getValue().size() < min){
+                    if(i == 1 && (entry.getKey() == result.get(0)))
+                        continue;
+                    min = entry.getValue().size();
+                    result.add(entry.getKey());
+                    System.out.println(entry.getKey());
+                }
             }
         }
+        System.out.println(result.get(0) + result.get(1));
         return result;
     }
 
+    /**
+     *
+     * @param hostURL
+     * @return 合适的region ip作为接替
+     * 这里只需要返回一个就行，作为迁移的Region
+     */
     public String getIdealServer(String hostURL){
         Integer min = Integer.MAX_VALUE;
         String result = "";
@@ -58,10 +74,14 @@ public class TableManager {
     }
 
     public boolean hasServer(String hostURL){
-        for(String s: serverList)
+        boolean result = false;
+        System.out.println("ServerLists: -----");
+        for(String s: serverList){
+            System.out.println("    " + s);
             if(s.equals(hostURL))
-                return true;
-        return false;
+                result = true;
+        }
+        return result;
     }
 
     public boolean inLiveServer(String hostURL) {
@@ -79,15 +99,18 @@ public class TableManager {
         // 不仅仅要加上这个主机，还要为其添加一个列表 用来记录所有的table
         List<String> empty_list = new ArrayList<>();
         liveServer.put(hostURL, empty_list);
+        System.out.println("---add Server OK!---");
     }
 
-    public String getInetAddress(String table){
-        System.out.println("-----getInetAddress::-----");
-        for(Map.Entry<String, String> entry : TableInfo.entrySet()){
+    public List<String> getInetAddress(String table){
+        System.out.println("-----get " + table + "'s region ips-----");
+        for(Map.Entry<String, List<String>> entry : TableInfo.entrySet()){
             System.out.println(entry.getKey());
-            System.out.println(entry.getValue());
+            List<String> ips = entry.getValue();
+            for(String ip : ips)
+                System.out.println(ip);
             if(entry.getKey().equals(table)){
-                return entry.getValue();
+                return ips;
             }
         }
 
@@ -105,7 +128,15 @@ public class TableManager {
     public void addTable(String table, String ip){
         System.out.println("------addTable::-------");
         System.out.println(table + "," + ip);
-        TableInfo.put(table,ip);
+        if(TableInfo.containsKey(table)){
+            List<String> ips = TableInfo.get(table);
+            ips.add(ip);
+        }
+        else{
+            List<String> ips = new ArrayList<>();
+            ips.add(ip);
+            TableInfo.put(table, ips);
+        }
         // 如果当前的ip已存在活跃列表中，那么将table计入其对应的list里保存。
         if(liveServer.containsKey(ip))
             liveServer.get(ip).add(table);
@@ -121,15 +152,20 @@ public class TableManager {
         liveServer.get(ip).removeIf(table::equals);
     }
 
-    public void exchangeTable(String bestInet, String hostUrl) {
-        List <String> tableList = getTableList(hostUrl);
+    public void exchangeTable(String newRegion, String oldRegion) {
+        List <String> tableList = getTableList(oldRegion);
+        // oldRegion 的 TableList 下的表格，要全部更新tableInfo
         for(String table : tableList){
-            TableInfo.put(table,bestInet);
+            List<String> ips = TableInfo.get(table);
+            ips.remove(oldRegion);
+            ips.add(newRegion);
+            TableInfo.put(table,ips);
         }
-        List <String> bestInetTable = liveServer.get(bestInet);
+        // 给新的Region 建立liveServer.TableList
+        List <String> bestInetTable = liveServer.get(newRegion);
         bestInetTable.addAll(tableList);
-        liveServer.put(bestInet,bestInetTable);
-        liveServer.remove(hostUrl);
+        liveServer.put(newRegion,bestInetTable);
+        liveServer.remove(oldRegion);
     }
 
     public List<String> getTableList(String hostUrl) {
@@ -139,6 +175,14 @@ public class TableManager {
             }
         }
         return null;
+    }
+
+    public String getRegion1(String hostUrl, String tableName){
+        List<String> regions = TableInfo.get(tableName);
+        if (regions.get(0).equals(hostUrl))
+            return regions.get(1);
+        else
+            return regions.get(0);
     }
 
     //--------------------Socket---------------------

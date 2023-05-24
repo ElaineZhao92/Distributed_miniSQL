@@ -98,8 +98,8 @@ class Client implements Runnable{
         //返回结果给客户端
         output.println(result);
         //把catalog备份到FTP上
-        ftpUtils.uploadFile("table_catalog", SocketUtils.getHostAddress(), "catalog");
-        ftpUtils.uploadFile("index_catalog", SocketUtils.getHostAddress(), "catalog");
+//        ftpUtils.uploadFile("table_catalog", SocketUtils.getHostAddress(), "catalog");
+//        ftpUtils.uploadFile("index_catalog", SocketUtils.getHostAddress(), "catalog");
         
         String[] sqls=sql.split(" ");
         String[] results=result.split(" ");
@@ -109,14 +109,14 @@ class Client implements Runnable{
 //      String tablename=results[2]; //除了select语句，所有表名都在第三个String
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
-            sendToFTP(results[2]);
+//            sendToFTP(results[2]);
             res="[region] create add "+results[2];
             flag=true;
             return flag;
         }
         else if(keyword.equals("drop")){ //删表
             //把表名从ftp上删除
-            deleteFromFTP(results[2]);
+//            deleteFromFTP(results[2]);
             res="[region] create delete "+results[2];
             flag=true;
             return flag;
@@ -125,8 +125,8 @@ class Client implements Runnable{
             //从ftp上删掉旧的表，发送新的表
             System.out.println("Insert/Delete::!!");
             System.out.println(sqls[2]);
-            deleteFromFTP(sqls[2]);
-            sendToFTP(sqls[2]);
+//            deleteFromFTP(sqls[2]);
+//            sendToFTP(sqls[2]);
             System.out.println("success");
             flag = false;
             return flag;

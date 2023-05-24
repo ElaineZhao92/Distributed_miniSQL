@@ -5,6 +5,8 @@ public enum StrategyTypeEnum {
 
     INVALID(2),
 
+    ADD(3),
+
     ;
 
     /**

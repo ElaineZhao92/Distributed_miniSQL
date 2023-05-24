@@ -140,6 +140,7 @@ public class FtpUtils {
     }
 
     public boolean uploadFile(String fileName, String savePath) {
+        System.out.println("Upload File begin!!" + fileName + ", " +savePath);
         login();
         boolean flag = false;
         InputStream inputStream = null;
@@ -165,11 +166,13 @@ public class FtpUtils {
                 closeConnect();
             }
         }
+        System.out.println("Upload File end!!" + fileName + ", " +savePath);
         return flag;
     }
 
     public boolean uploadFile(String fileName, String IP, String savePath) {
         login();
+        System.out.println("Upload File begin!!" +", "+ IP + ", " + fileName + ", " +savePath);
         boolean flag = false;
         InputStream inputStream = null;
         if (ftpClient != null) {
@@ -195,6 +198,7 @@ public class FtpUtils {
                 closeConnect();
             }
         }
+        System.out.println("Upload File end!!" +", "+ IP + ", " + fileName + ", " +savePath);
         return flag;
     }
 

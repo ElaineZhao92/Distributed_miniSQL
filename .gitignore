@@ -10,3 +10,4 @@ gen
 /Client/target/
 /MasterServer/target/
 /RegionServer/target/
+/miniSQL/target/

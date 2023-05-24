@@ -23,48 +23,48 @@ public class RegionCMD {
     public String processRegionCommand(String cmd){
         String result = "";
         String ip = socket.getInetAddress().getHostAddress();
-        System.out.println("ip::::::" + ip);
-        System.out.println("cmd::::::" + cmd);
 
         if(ip.equals("127.0.0.1"))
             ip = SocketUtils.getHostAddress();
 
         System.out.println(ip);
 
-        if (cmd.startsWith("query") && !tableManager.hasServer(ip)) {
+        if (cmd.startsWith("recover") && !tableManager.hasServer(ip)) {
             tableManager.addServer(ip);
             String[] allTable = cmd.substring(6).split(" ");
             for(String temp : allTable) {
                 tableManager.addTable(temp, ip);
             }
             System.out.println("------add server ok-----");
+            result += "recover"; //不管region是第几次连，让他drop本地所有的内容
 
-        } else if (cmd.startsWith("query") && tableManager.hasServer(ip) &&!tableManager.inLiveServer(ip)) {
-            System.out.println("-----not in Live Server------");
-            String[] allTable = cmd.substring(6).split(" ");
-            ServiceStrategyExecutor executor = new ServiceStrategyExecutor(tableManager);
-            executor.execStrategy(ip, StrategyTypeEnum.RECOVER);
-            System.out.println("------Exec Recover, add Tables okay!-----");
-            for(String temp : allTable) {
-                tableManager.addTable(temp, ip);
-            }
+        }
+//        else if (cmd.startsWith("recover") && tableManager.hasServer(ip) &&!tableManager.inLiveServer(ip)) {
+//            System.out.println("-----not in Live Server------");
+//            String[] allTable = cmd.substring(6).split(" ");
+//            ServiceStrategyExecutor executor = new ServiceStrategyExecutor(tableManager);
+//            executor.execStrategy(ip, StrategyTypeEnum.RECOVER);
+//            System.out.println("------Exec Recover, add Tables okay!-----");
+//            for(String temp : allTable) {
+//                tableManager.addTable(temp, ip);
+//            }
+//            result += "recover"; //不管region是第几次连，让他drop本地所有的内容
+//        }   这段 recover 在 Zookeeper 这里实现
+        else if (cmd.startsWith("create")) {
 
-        } else if (cmd.startsWith("create")) {
-            cmd.substring(7);
-            if(cmd.startsWith("add")) {
-                // [region] create add/delete table_name 情况
-                String tableName = cmd.substring(4);
-                tableManager.addTable(tableName,ip);
-                result += "add Table" + tableName + "\n";
-                System.out.println("result = " + result);
-            }
-            else if(cmd.startsWith("delete")){
-                String tableName = cmd.substring(7);
-                tableManager.deleteTable(tableName,ip);
-                result += "delete Table" + tableName + "\n";
-                System.out.println("result = " + result);
-            }
-        } else if (cmd.startsWith("drop")){
+            String tableName = cmd.substring(7);
+            tableManager.addTable(tableName,ip);
+            result += "create table" + tableName + "\n";
+            System.out.println("result = " + result);
+
+        }
+        else if(cmd.startsWith("delete")){
+            String tableName = cmd.substring(7);
+            tableManager.deleteTable(tableName,ip);
+            result += "delete table" + tableName + "\n";
+            System.out.println("result = " + result);
+        }
+        else if (cmd.startsWith("drop")){
             log.warn("完成从节点的数据转移");
 
         } else if (cmd.startsWith("recover")){
