@@ -29,6 +29,9 @@ public class ServiceStrategyExecutor {
                 case INVALID:
                     execInvalidStrategy(hostUrl);
                     break;
+                case ADD:
+                    execAddStrategy(hostUrl);
+
             }
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
@@ -44,6 +47,13 @@ public class ServiceStrategyExecutor {
      * 这里首先要遍历挂掉Region的TableList
      */
 
+    private void execAddStrategy(String hostUrl){
+        System.out.println("---Add：hostUrl----");
+        SocketThread socketThread = tableManager.getSocketThread(hostUrl);
+        tableManager.addServer(hostUrl);
+//        System.out.println("result = " + tableManager.hasServer(hostUrl));
+        socketThread.send("recover ");
+    }
     private void execInvalidStrategy (String hostUrl) {
         System.out.println("---Invalid：hostUrl----");
         StringBuffer allTable = new StringBuffer();

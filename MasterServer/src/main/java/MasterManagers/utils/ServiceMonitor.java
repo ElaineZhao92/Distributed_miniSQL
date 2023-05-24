@@ -72,6 +72,7 @@ public class ServiceMonitor implements PathChildrenCacheListener {
         } else {
             // 新发现的服务器，新增一份数据
             System.out.println("对该服务器" + hostName + "执行新增策略");
+            strategyExecutor.execStrategy(hostUrl, StrategyTypeEnum.ADD);
         }
     }
 

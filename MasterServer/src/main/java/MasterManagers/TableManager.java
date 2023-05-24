@@ -68,10 +68,14 @@ public class TableManager {
     }
 
     public boolean hasServer(String hostURL){
-        for(String s: serverList)
+        boolean result = false;
+        System.out.println("ServerLists: -----");
+        for(String s: serverList){
+            System.out.println("    " + s);
             if(s.equals(hostURL))
-                return true;
-        return false;
+                result = true;
+        }
+        return result;
     }
 
     public boolean inLiveServer(String hostURL) {
@@ -89,6 +93,7 @@ public class TableManager {
         // 不仅仅要加上这个主机，还要为其添加一个列表 用来记录所有的table
         List<String> empty_list = new ArrayList<>();
         liveServer.put(hostURL, empty_list);
+        System.out.println("---add Server OK!---");
     }
 
     public List<String> getInetAddress(String table){
