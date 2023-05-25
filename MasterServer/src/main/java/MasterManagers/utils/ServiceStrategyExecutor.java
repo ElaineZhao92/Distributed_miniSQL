@@ -52,7 +52,7 @@ public class ServiceStrategyExecutor {
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
         tableManager.addServer(hostUrl);
 //        System.out.println("result = " + tableManager.hasServer(hostUrl));
-        socketThread.send("recover ");
+//        socketThread.send("recover ");
     }
     private void execInvalidStrategy (String hostUrl) {
         System.out.println("---Invalid：hostUrl----");

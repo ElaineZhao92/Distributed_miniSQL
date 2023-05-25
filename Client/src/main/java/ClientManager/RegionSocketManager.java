@@ -58,6 +58,7 @@ public class RegionSocketManager {
         // if(line!=NULL){
         if(line.contains("|")){
             String []values=line.split("\\|");
+            System.out.println(prompt);
             for (int i=1;i<values.length;i++){
                 // values[i]=values[i].substring(1);
                 System.out.printf("|%s",StringUtils.center(values[i],width));
