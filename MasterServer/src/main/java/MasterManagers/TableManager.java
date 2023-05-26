@@ -50,7 +50,7 @@ public class TableManager {
                 }
             }
         }
-        System.out.println(result.get(0) + result.get(1));
+        System.out.println(result.get(0) + " " + result.get(1));
         return result;
     }
 

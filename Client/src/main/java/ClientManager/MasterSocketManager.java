@@ -94,9 +94,6 @@ public class MasterSocketManager {
                 String[] args = line.split(" ");
                 System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
                 String fip = args[2], sip=args[3],table = args[4], op= args[1];
-//                System.out.println("主：" + fip);
-//                System.out.println("副：" + sip);
-//                System.out.println("table：" + table);
                 this.clientManager.cacheManager.setfCache(table, fip);
                 this.clientManager.cacheManager.setsCache(table, sip);
                 //发送给主 副两个节点

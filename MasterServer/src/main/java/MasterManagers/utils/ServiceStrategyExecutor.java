@@ -54,7 +54,7 @@ public class ServiceStrategyExecutor {
 //        System.out.println("result = " + tableManager.hasServer(hostUrl));
         socketThread.send("recover");
     }
-    private void execInvalidStrategy (String hostUrl) {
+    private void execInvalidStrategy (String hostUrl) throws InterruptedException{
         System.out.println("---Invalid：hostUrl----");
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
@@ -62,10 +62,18 @@ public class ServiceStrategyExecutor {
         for (String table : tableList){
             String bestInet = tableManager.getIdealServer(hostUrl, table);
             System.out.println("bestInet: " + bestInet + " table: " + table);
-            String region = tableManager.getRegion1(hostUrl, table);
-            String message = "[master] copy " + bestInet + " " + table;
-            SocketThread socketThread = tableManager.getSocketThread(region);
-            socketThread.send(message);
+            String region1 = tableManager.getRegion1(hostUrl, table);
+
+            String message1 = "copy " + bestInet + " " + table;
+            SocketThread socketThread1 = tableManager.getSocketThread(region1);
+            socketThread1.send(message1);
+
+            String message2 = "receive " + table;
+            SocketThread socketThread2 = tableManager.getSocketThread(bestInet);
+            socketThread2.send(message2);
+            Thread.sleep(2000);
+            message2 = "receive " + table + "_index.index";
+            socketThread2.send(message2);
             // 这里的语句格式：hostURL
             tableManager.exchangeTable(bestInet, hostUrl);
         }

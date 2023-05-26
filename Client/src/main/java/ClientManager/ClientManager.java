@@ -4,6 +4,7 @@ import ClientManager.MasterSocketManager;
 import ClientManager.RegionSocketManager;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -110,23 +111,26 @@ public class ClientManager {
     // }
 
     // use ip connect to the region ,端口号固定为22222
-    public void connectToRegion(String ip, String sql) throws IOException, InterruptedException {
+    public void connectToRegion(String ip, String sql) throws IOException, InterruptedException, SocketException {
         try{
-        this.regionSocketManager.connectRegionServer(ip);
-        Thread.sleep(100);
-        this.regionSocketManager.sendToRegion(sql);}
-        catch(IOException e){
-            //region 挂了重新进master处理
-            Map<String, String> target = this.sqlParser(sql);
-            if(target.get("kind").equals("create")){
-            this.masterSocketManager.processCreate(sql,target.get("kind"), target.get("name"));
+            if (this.regionSocketManager.connectRegionServer(ip)){
+                Thread.sleep(100);
+                this.regionSocketManager.sendToRegion(sql);
             }
             else{
-            this.masterSocketManager.process(sql,target.get("kind"), target.get("name"));}
+                Map<String, String> target = this.sqlParser(sql);
+                this.masterSocketManager.process(sql,target.get("kind"), target.get("name"));
+            }
+
+        }
+        catch(SocketException e){
+            //region 挂了重新进master处理
+            System.out.println("进入catch 处理");
+
         }
     }
     // parse the sql
-    private Map<String, String> sqlParser(String sql) {
+    public Map<String, String> sqlParser(String sql) {
         // 粗略地解析需要操作的table和index的名字
         Map<String, String> result = new HashMap<>();
         result.put("cache", "true");

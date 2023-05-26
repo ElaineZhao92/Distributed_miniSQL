@@ -19,15 +19,17 @@ public class ClientSocketManager implements Runnable{
     private MasterSocketManager masterSocketManager;
     private ServerSocket serversocket;
     private HashMap<Socket,Thread> clientHashMap;
+    private boolean isRunning = false;
     ClientSocketManager(int port, MasterSocketManager masterSocketManager) throws IOException{
         this.serversocket=new ServerSocket(port);
         this.masterSocketManager=masterSocketManager;
         this.clientHashMap=new HashMap<Socket,Thread>();
+        this.isRunning = true;
     }
 
     //不断循环连接客户端
     public void run(){
-        while(true){
+        while(isRunning){
             try {
                 Thread.sleep(1000);
                 Socket socket = serversocket.accept();
@@ -35,6 +37,8 @@ public class ClientSocketManager implements Runnable{
                 Thread thread=new Thread(client);
                 this.clientHashMap.put(socket,thread);
                 thread.start();
+
+
             } catch (InterruptedException | IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

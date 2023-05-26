@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 public class RegionSocketManager {
     public Socket socket = null;
@@ -14,7 +17,6 @@ public class RegionSocketManager {
     private Thread infoListener;
 
     private String region;
-
     public RegionSocketManager() {
 
     }
@@ -33,7 +35,7 @@ public class RegionSocketManager {
     //     System.out.println("CLIENT>>>connect to region  "+this.region+" : " + PORT);
     // }
 
-    public void connectRegionServer(String ip) throws IOException {
+    public boolean connectRegionServer(String ip) throws IOException {
         // System.out.println("connectRegionServer : "+ip);
         socket = new Socket(ip, 22222);
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -41,6 +43,7 @@ public class RegionSocketManager {
         isRunning = true;
         this.listenToRegion();
         System.out.println("CLIENT>>>connect to region  " + ip + " : 22222");
+        return this.isRunning;
     }
 
 
@@ -102,7 +105,11 @@ public class RegionSocketManager {
 
                 try {
                     receiveFromRegion();
-                } catch (IOException e) {
+                } catch (SocketException e) {
+                    isRunning = false;
+//                    e.printStackTrace();
+
+                } catch (IOException e){
                     e.printStackTrace();
                 }
 

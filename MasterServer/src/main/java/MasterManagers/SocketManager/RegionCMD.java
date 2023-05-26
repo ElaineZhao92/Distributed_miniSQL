@@ -51,14 +51,14 @@ public class RegionCMD {
 
             String tableName = cmd.substring(7);
             tableManager.addTable(tableName,ip);
-            result += "create table" + tableName + "\n";
+            result += "create table " + tableName + "\n";
             System.out.println("result = " + result);
 
         }
         else if(cmd.startsWith("delete")){
             String tableName = cmd.substring(7);
             tableManager.deleteTable(tableName,ip);
-            result += "delete table" + tableName + "\n";
+            result += "delete table " + tableName + "\n";
             System.out.println("result = " + result);
         }
         else if (cmd.startsWith("drop")){
