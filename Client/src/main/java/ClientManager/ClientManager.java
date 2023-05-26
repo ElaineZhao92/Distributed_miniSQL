@@ -92,8 +92,10 @@ public class ClientManager {
                 } else {
                     // 如果查到了端口号就直接在RegionSocketManager中进行连接
                     this.connectToRegion(fcache, command);
+                    if(!target.get("kind").equals("select")){
+                        //非select 再连副
                     scache = cacheManager.getsCache(table);
-                    this.connectToRegion(scache, command);
+                    this.connectToRegion(scache, command);}
                 }
 
 
@@ -112,6 +114,7 @@ public class ClientManager {
     // use ip connect to the region ,端口号固定为22222
     public void connectToRegion(String ip, String sql) throws IOException, InterruptedException {
         try{
+            
         this.regionSocketManager.connectRegionServer(ip);
         Thread.sleep(100);
         this.regionSocketManager.sendToRegion(sql);}
