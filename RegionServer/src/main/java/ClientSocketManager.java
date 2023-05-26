@@ -70,11 +70,14 @@ class Client implements Runnable{
                 Thread.sleep(Long.parseLong("1000"));
                 String sql = input.readLine();
                 if(sql!=null){
-                    String res=""; //sql语句处理后的结果
+                    StringBuffer res = new StringBuffer(""); //sql语句处理后的结果
                     boolean isTableModified=getResult(sql,socket.getInetAddress().toString(),res);
+                    System.out.println("getResult ok!!");
+                    System.out.println("res = " + res);
                     //看是否发生了表的增删，需要通知主节点
+                    String ress = new String(res);
                     if(isTableModified){
-                        masterSocketManager.sendToMaster(res);
+                        masterSocketManager.sendToMaster(ress);
                     }
                 }
             } catch (IOException e) {
@@ -88,7 +91,7 @@ class Client implements Runnable{
         }
     }
 
-    public boolean getResult (String sql,String ip,String res) throws Exception {
+    public boolean getResult (String sql,String ip,StringBuffer res) throws Exception {
         boolean flag=false;
         System.out.println("要处理的命令：" + sql);
         //处理sql语句
@@ -110,14 +113,20 @@ class Client implements Runnable{
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
 //            sendToFTP(results[2]);
-            res="[region] create add "+results[2];
+            System.out.println("res == " + res);
+//            res="[region] create add "+ results[2];
+            res.append("[region] create "+ results[2]);
+
+            System.out.println("res == " + res);
             flag=true;
             return flag;
         }
         else if(keyword.equals("drop")){ //删表
             //把表名从ftp上删除
 //            deleteFromFTP(results[2]);
-            res="[region] create delete "+results[2];
+//            res="[region] create delete "+results[2];
+            res.append("[region] drop "+ results[2]);
+
             flag=true;
             return flag;
         }
