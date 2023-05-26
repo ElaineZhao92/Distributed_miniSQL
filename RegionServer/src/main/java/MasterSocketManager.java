@@ -98,7 +98,7 @@ public class MasterSocketManager implements Runnable {
                 System.out.println("here");
                 output.println("[region] drop successfully");
             }
-            else if (line.equals("[master] recover")) {
+            else if (line.startsWith("[master] recover")) {
                 System.out.println("master::recover");
                 String tableName = dataBaseManager.getMetaInfo();
                 String[] tableNames = tableName.split(" ");
@@ -117,7 +117,7 @@ public class MasterSocketManager implements Runnable {
 
                 output.println("[region] recover successfully");
             }
-            else if (line.equals("[master] copy")) {
+            else if (line.startsWith("[master] copy")) {
                 System.out.println("master::copy");
                 String[] info = line.split(" ");
                 System.out.println("ip::" + info[2]);
