@@ -52,7 +52,7 @@ public class ServiceStrategyExecutor {
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
         tableManager.addServer(hostUrl);
 //        System.out.println("result = " + tableManager.hasServer(hostUrl));
-//        socketThread.send("recover ");
+        socketThread.send("recover");
     }
     private void execInvalidStrategy (String hostUrl) {
         System.out.println("---Invalid：hostUrl----");
@@ -63,7 +63,7 @@ public class ServiceStrategyExecutor {
             String bestInet = tableManager.getIdealServer(hostUrl, table);
             System.out.println("bestInet: " + bestInet + " table: " + table);
             String region = tableManager.getRegion1(hostUrl, table);
-            String message = "[master] copy" + bestInet + table;
+            String message = "[master] copy " + bestInet + " " + table;
             SocketThread socketThread = tableManager.getSocketThread(region);
             socketThread.send(message);
             // 这里的语句格式：hostURL
@@ -76,7 +76,7 @@ public class ServiceStrategyExecutor {
         System.out.println("---Recover:hostUrl----");
         tableManager.recoverServer(hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
-        socketThread.send("recover ");
+        socketThread.send("recover");
     }
 
 
