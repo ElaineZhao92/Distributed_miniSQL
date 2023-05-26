@@ -11,8 +11,9 @@ public class ZookeeperManager implements Runnable {
         this.tableManager = tableManager;
     }
 
-    public static final String ZK_HOST = "localhost:4866";
-    //    public static final String ZK_HOST = "172.20.10.10:2181";
+//    public static final String ZK_HOST = "localhost:2181";
+  public static final String ZK_HOST = "10.181.155.135:2181";
+
     //ZooKeeper会话超时时间
     public static final Integer ZK_SESSION_TIMEOUT = 3000;
     //ZooKeeper连接超时时间

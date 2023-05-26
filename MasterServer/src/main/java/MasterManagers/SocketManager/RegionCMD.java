@@ -24,21 +24,18 @@ public class RegionCMD {
         String result = "";
         String ip = socket.getInetAddress().getHostAddress();
 
-        if(ip.equals("127.0.0.1"))
-            ip = SocketUtils.getHostAddress();
-
         System.out.println(ip);
 
-        if (cmd.startsWith("recover") && !tableManager.hasServer(ip)) {
-            tableManager.addServer(ip);
-            String[] allTable = cmd.substring(6).split(" ");
-            for(String temp : allTable) {
-                tableManager.addTable(temp, ip);
-            }
-            System.out.println("------add server ok-----");
-            result += "recover"; //不管region是第几次连，让他drop本地所有的内容
-
-        }
+//        if (cmd.startsWith("recover") && !tableManager.hasServer(ip)) {
+//            tableManager.addServer(ip);
+//            String[] allTable = cmd.substring(6).split(" ");
+//            for(String temp : allTable) {
+//                tableManager.addTable(temp, ip);
+//            }
+//            System.out.println("------add server ok-----");
+//            result += "recover"; //不管region是第几次连，让他drop本地所有的内容
+//
+//        }
 //        else if (cmd.startsWith("recover") && tableManager.hasServer(ip) &&!tableManager.inLiveServer(ip)) {
 //            System.out.println("-----not in Live Server------");
 //            String[] allTable = cmd.substring(6).split(" ");
@@ -50,7 +47,7 @@ public class RegionCMD {
 //            }
 //            result += "recover"; //不管region是第几次连，让他drop本地所有的内容
 //        }   这段 recover 在 Zookeeper 这里实现
-        else if (cmd.startsWith("create")) {
+        if (cmd.startsWith("create")) {
 
             String tableName = cmd.substring(7);
             tableManager.addTable(tableName,ip);

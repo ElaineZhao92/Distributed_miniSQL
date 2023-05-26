@@ -52,24 +52,23 @@ public class ServiceStrategyExecutor {
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
         tableManager.addServer(hostUrl);
 //        System.out.println("result = " + tableManager.hasServer(hostUrl));
-        socketThread.send("recover ");
+//        socketThread.send("recover ");
     }
     private void execInvalidStrategy (String hostUrl) {
         System.out.println("---Invalid：hostUrl----");
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
         // 获得除了当前ip之外，最佳的ip作为接任Region
-        String bestInet = tableManager.getIdealServer(hostUrl);
-        System.out.println("bestInet: " + bestInet);
-
-        for(String table : tableList){
+        for (String table : tableList){
+            String bestInet = tableManager.getIdealServer(hostUrl, table);
+            System.out.println("bestInet: " + bestInet + " table: " + table);
             String region = tableManager.getRegion1(hostUrl, table);
             String message = "[master] copy" + bestInet + table;
             SocketThread socketThread = tableManager.getSocketThread(region);
             socketThread.send(message);
+            // 这里的语句格式：hostURL
+            tableManager.exchangeTable(bestInet, hostUrl);
         }
-        // 这里的语句格式：hostURL
-        tableManager.exchangeTable(bestInet, hostUrl);
     }
 
     //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，

@@ -9,6 +9,7 @@ public class RegionServer implements Runnable {
     private ClientSocketManager clientSocketManager;
     private DatabaseManager dataBaseManager;
     private MasterSocketManager masterSocketManager;
+    private RegionSocketReceiveManager regionSocketReceiveManager;
     private ZookeeperServiceManager zookeeperManager;
 
     private final int PORT = 22222;
@@ -19,6 +20,7 @@ public class RegionServer implements Runnable {
         masterSocketManager = new MasterSocketManager();
         masterSocketManager.sendTableInfoToMaster(dataBaseManager.getMetaInfo());
         clientSocketManager = new ClientSocketManager(PORT,masterSocketManager);
+        regionSocketReceiveManager = new RegionSocketReceiveManager(1117);
         Thread centerThread = new Thread(clientSocketManager);
         centerThread.start();
     }
@@ -37,6 +39,8 @@ public class RegionServer implements Runnable {
         }
         Thread zkServiceThread = new Thread(zookeeperManager);
         zkServiceThread.start();
+        Thread regionSocketReceiveThread = new Thread(regionSocketReceiveManager);
+        regionSocketReceiveThread.start();
         Thread MasterSocketThread = new Thread(masterSocketManager);
         MasterSocketThread.start();
 
