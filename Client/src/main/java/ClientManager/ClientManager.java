@@ -28,13 +28,13 @@ public class ClientManager {
     // 在客户端做一个简单的sqlParser，先对sql语句进行一个简单的解析，然后在客户端缓存中查询表是否已经存在
     public void run()
             throws IOException, InterruptedException {
-        System.out.println("CLIENT>>>Client start");
+        System.out.println("CLIENT>Client start");
         Scanner input = new Scanner(System.in);
         String line = "";
         while (true) {
             StringBuilder sql = new StringBuilder();
             // 读入一句完整的SQL语句
-            System.out.println("CLIENT>>>please input the sql:");
+            System.out.println("CLIENT>please input the sql:");
             // System.out.print("DisMiniSQLCIENT>>>");
             while (line.isEmpty() || line.charAt(line.length() - 1) != ';') {
                 line = input.nextLine();
@@ -62,13 +62,13 @@ public class ClientManager {
             sql = new StringBuilder();
             Map<String, String> target = this.sqlParser(command);
             if (target.containsKey("error")) {
-                System.out.println("CLIENT>>>the format is wrong, please try again!");
+                System.out.println("CLIENT>the format is wrong, please try again!");
             }
 
             String table = target.get("name");
             String fcache = null;
             String scache = null;
-            System.out.println("CLIENT>>>the table is: " + table);
+            System.out.println("CLIENT>the table is: " + table);
 
             if (target.get("kind").equals("create")) {
                 //创表无cache 
@@ -78,12 +78,12 @@ public class ClientManager {
                 if (target.get("cache").equals("true")) {
                     fcache = cacheManager.getfCache(table);
                     if (fcache == null) {
-                        System.out.println("CLIENT>>>There is no corresponding cache for the table .");
+                        System.out.println("CLIENT>There is no corresponding cache for the table .");
                          // cache里面没有找到表所对应的端口号，去masterSocket里面查询
                         // this.masterSocketManager.process(command, table);
                     } else {
                         //终于查到了！直接在RegionSocketManager中进行连接
-                        System.out.println("CLIENT>>>The server according to the cache is: " + fcache);   
+                        System.out.println("CLIENT>The server according to the cache is: " + fcache);
                         // this.connectToRegion(cache, command);
                     }
                 }

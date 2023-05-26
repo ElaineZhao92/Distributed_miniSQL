@@ -42,7 +42,7 @@ public class RegionSocketManager {
         output = new PrintWriter(socket.getOutputStream(), true);
         isRunning = true;
         this.listenToRegion();
-        System.out.println("CLIENT>>>connect to region  " + ip + " : 22222");
+        System.out.println("CLIENT>connect to region  " + ip + " : 22222");
         return this.isRunning;
     }
 
@@ -50,13 +50,13 @@ public class RegionSocketManager {
     public void receiveFromRegion() throws IOException {
         String line = new String("");
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-            System.out.println("CLIENT>>>Socket closed !");
+            System.out.println("CLIENT>Socket closed !");
         } else {
             line = input.readLine();
         }
         if (line != null) {
             //print result
-            String prompt="CLIENT>>>Info from region is: ";
+            String prompt="CLIENT>Info from region is: ";
             int width=10;//每个字段值10个空间
         // if(line!=NULL){
         if(line.contains("|")){
@@ -96,7 +96,7 @@ public class RegionSocketManager {
     class InfoListener extends Thread {
         @Override
         public void run() {
-            System.out.println("CLIENT>>>start listening to region!");
+            System.out.println("CLIENT>start listening to region!");
             while (isRunning) {
                 if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
                     isRunning = false;
