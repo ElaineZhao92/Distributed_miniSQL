@@ -42,6 +42,8 @@ public class RegionSocketSendManager implements Runnable {
             try {
                 sendToRegionNotice();
                 sendToRegion();
+                this.table_name = this.table_name + "_index";
+                sendToRegion();
             } catch (IOException e) {
                 e.printStackTrace();
             }

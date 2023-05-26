@@ -60,12 +60,13 @@ public class TableManager {
      * @return 合适的region ip作为接替
      * 这里只需要返回一个就行，作为迁移的Region
      */
-    public String getIdealServer(String hostURL){
+    public String getIdealServer(String hostURL, String table){
         Integer min = Integer.MAX_VALUE;
         String result = "";
+        String region1 = getRegion1(hostURL, table);
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
             System.out.println(entry.getKey());
-            if(!entry.getKey().equals(hostURL) && entry.getValue().size()<min){
+            if(!(entry.getKey().equals(hostURL)) && !(entry.getKey().equals(region1)) && entry.getValue().size()<min){
                 min = entry.getValue().size();
                 result = entry.getKey();
             }
