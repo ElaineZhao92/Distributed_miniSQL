@@ -48,22 +48,25 @@ public class ServiceStrategyExecutor {
      */
 
     private void execAddStrategy(String hostUrl){
-        System.out.println("---Add：hostUrl----");
+        System.out.println("MASTER>Add：hostUrl");
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
         tableManager.addServer(hostUrl);
 //        System.out.println("result = " + tableManager.hasServer(hostUrl));
         socketThread.send("recover");
     }
-    private void execInvalidStrategy (String hostUrl) throws InterruptedException{
-        System.out.println("---Invalid：hostUrl----");
+    private void execInvalidStrategy (String hostUrl) throws InterruptedException {
+        System.out.println("MASTER>Invalid：hostUrl");
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
         // 获得除了当前ip之外，最佳的ip作为接任Region
         for (String table : tableList){
             String bestInet = tableManager.getIdealServer(hostUrl, table);
-            System.out.println("bestInet: " + bestInet + " table: " + table);
+            System.out.println("MASTER>bestInet: " + bestInet + " table: " + table);
             String region1 = tableManager.getRegion1(hostUrl, table);
-
+            System.out.println("MASTER>copy region = "+region1);
+//            String message = "copy " + bestInet +" "+ table;
+//            SocketThread socketThread = tableManager.getSocketThread(region);
+//            socketThread.send(message);
             String message1 = "copy " + bestInet + " " + table;
             SocketThread socketThread1 = tableManager.getSocketThread(region1);
             socketThread1.send(message1);
@@ -81,7 +84,7 @@ public class ServiceStrategyExecutor {
 
     //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，
     private void execRecoverStrategy(String hostUrl) {
-        System.out.println("---Recover:hostUrl----");
+        System.out.println("MASTER>Recover:hostUrl");
         tableManager.recoverServer(hostUrl);
         SocketThread socketThread = tableManager.getSocketThread(hostUrl);
         socketThread.send("recover");

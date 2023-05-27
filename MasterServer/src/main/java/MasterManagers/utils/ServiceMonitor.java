@@ -34,21 +34,21 @@ public class ServiceMonitor implements PathChildrenCacheListener {
         switch (pathChildrenCacheEvent.getType()) {
             case CHILD_ADDED:
                 System.out.println("------Child ADDED-------");
-                System.out.println("服务器目录新增节点: " + pathChildrenCacheEvent.getData().getPath());
+                System.out.println("MASTER>服务器目录新增节点: " + pathChildrenCacheEvent.getData().getPath());
                 eventServerAppear(
                         eventPath.replaceFirst(ZookeeperManager.ZNODE + "/", ""),
                         client.getData(eventPath));
                 break;
             case CHILD_REMOVED:
                 System.out.println("------Child REMOVED-------");
-                System.out.println("服务器目录删除节点: " + pathChildrenCacheEvent.getData().getPath());
+                System.out.println("MASTER>服务器目录删除节点: " + pathChildrenCacheEvent.getData().getPath());
                 eventServerDisappear(
                         eventPath.replaceFirst(ZookeeperManager.ZNODE + "/", ""),
                         new String(pathChildrenCacheEvent.getData().getData()));
                 break;
             case CHILD_UPDATED:
                 System.out.println("------Child UPDATED-------");
-                System.out.println("服务器目录更新节点: " + pathChildrenCacheEvent.getData().getPath());
+                System.out.println("MASTER>服务器目录更新节点: " + pathChildrenCacheEvent.getData().getPath());
                 eventServerUpdate(
                         eventPath.replaceFirst(ZookeeperManager.ZNODE + "/", ""),
                         client.getData(eventPath));
@@ -64,14 +64,14 @@ public class ServiceMonitor implements PathChildrenCacheListener {
      * @param hostUrl
      */
     public void eventServerAppear(String hostName, String hostUrl) {
-        System.out.println("新增服务器节点：主机名" + hostName + ", 地址 " + hostUrl);
+        System.out.println("MASTER>新增服务器节点：主机名" + hostName + ", 地址 " + hostUrl);
         if (strategyExecutor.hasServer(hostUrl)) {
             // 该服务器已经存在，即从失效状态中恢复
             System.out.println("对该服务器" + hostName + "执行恢复策略");
             strategyExecutor.execStrategy(hostUrl, StrategyTypeEnum.RECOVER);
         } else {
             // 新发现的服务器，新增一份数据
-            System.out.println("对该服务器" + hostName + "执行新增策略");
+            System.out.println("MASTER>对该服务器" + hostName + "执行新增策略");
             strategyExecutor.execStrategy(hostUrl, StrategyTypeEnum.ADD);
         }
     }
@@ -81,13 +81,13 @@ public class ServiceMonitor implements PathChildrenCacheListener {
      *  @param hostName
      * @param hostUrl*/
     public void eventServerDisappear(String hostName, String hostUrl) {
-        System.out.println("服务器节点失效：主机名 " + hostName + ", 地址 " + hostUrl);
+        System.out.println("MASTER>服务器节点失效：主机名 " + hostName + ", 地址 " + hostUrl);
         if (!strategyExecutor.hasServer(hostUrl)) {
             throw new RuntimeException("需要删除信息的服务器不存在于服务器列表中");
         } else {
             // 更新并处理下线的服务器
-            System.out.println("对该服务器" + hostName + "执行负载失败策略");
-            System.out.println("将该服务器下所处理的表，负载均衡至其他活跃服务器");
+            System.out.println("MASTER>对该服务器" + hostName + "执行负载失败策略");
+            System.out.println("MASTER>将该服务器下所处理的表，负载均衡至其他活跃服务器");
             strategyExecutor.execStrategy(hostUrl, StrategyTypeEnum.INVALID);
         }
     }
@@ -99,6 +99,6 @@ public class ServiceMonitor implements PathChildrenCacheListener {
      * @param hostUrl
      */
     public void eventServerUpdate(String hostName, String hostUrl) {
-        System.out.println("更新服务器节点：主机名 " + hostName + ",地址 " + hostUrl);
+        System.out.println("MASTER>更新服务器节点：主机名 " + hostName + ",地址 " + hostUrl);
     }
 }

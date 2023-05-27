@@ -14,7 +14,7 @@ public class ClientCMD {
     }
 
     public String processClientCommand(String cmd){
-        System.out.println("Master-processClientCommand::" + cmd);
+//        System.out.println("收到Client发来的信息 " + cmd);
         String result = "";
         String tableName = "";
         /**

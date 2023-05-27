@@ -35,7 +35,7 @@ public class TableManager {
     public List<String> getIdealServer(){
         List<String> result = new ArrayList<>();
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()) {
-            System.out.println(entry.getKey());
+//            System.out.println(entry.getKey());
         }
 
         for (int i = 0 ; i < 2; i ++ ){
@@ -46,11 +46,11 @@ public class TableManager {
                         continue;
                     min = entry.getValue().size();
                     result.add(entry.getKey());
-                    System.out.println(entry.getKey());
+//                    System.out.println(entry.getKey());
                 }
             }
         }
-        System.out.println(result.get(0) + " " + result.get(1));
+//        System.out.println(result.get(0) + " " + result.get(1));
         return result;
     }
 
@@ -65,7 +65,7 @@ public class TableManager {
         String result = "";
         String region1 = getRegion1(hostURL, table);
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
-            System.out.println(entry.getKey());
+//            System.out.println(entry.getKey());
             if(!(entry.getKey().equals(hostURL)) && !(entry.getKey().equals(region1)) && entry.getValue().size()<min){
                 min = entry.getValue().size();
                 result = entry.getKey();
@@ -100,11 +100,11 @@ public class TableManager {
         // 不仅仅要加上这个主机，还要为其添加一个列表 用来记录所有的table
         List<String> empty_list = new ArrayList<>();
         liveServer.put(hostURL, empty_list);
-        System.out.println("---add Server OK!---");
+        System.out.println("MASTER>add Server OK!");
     }
 
     public List<String> getInetAddress(String table){
-        System.out.println("-----get " + table + "'s region ips-----");
+        System.out.println("MASTER>get " + table + "'s region ips");
         for(Map.Entry<String, List<String>> entry : TableInfo.entrySet()){
             System.out.println(entry.getKey());
             List<String> ips = entry.getValue();
@@ -115,7 +115,7 @@ public class TableManager {
             }
         }
 
-        System.out.println("-------------------------");
+//        System.out.println("-------------------------");
         return null;
     }
 
@@ -127,7 +127,7 @@ public class TableManager {
     // ---------- 有关 table 的------------
 
     public void addTable(String table, String ip){
-        System.out.println("------addTable::-------");
+        System.out.println("MASTER>addTable::");
         System.out.println(table + "," + ip);
         if(TableInfo.containsKey(table)){
             List<String> ips = TableInfo.get(table);
