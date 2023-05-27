@@ -18,7 +18,7 @@ public class MasterSocketManager implements Runnable {
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
-    public final String MASTER = "192.168.155.135";
+    public final String MASTER = "10.192.134.67";
 
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);
@@ -31,7 +31,7 @@ public class MasterSocketManager implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("新消息>>>从节点的主服务器监听线程启动！");
+        System.out.println("REGION>从节点的主服务器监听线程启动！");
         while (isRunning) {
             if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
                 isRunning = false;
@@ -62,14 +62,14 @@ public class MasterSocketManager implements Runnable {
     public void receiveFromMaster() throws IOException {
         String line = null;
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
-            System.out.println("新消息>>>Socket已经关闭!");
+            System.out.println("REGION>Socket已经关闭!");
         } else {
             line = input.readLine();
         }
         if (line != null) {
-            System.out.println("receive from Master>> line::" + line);
+            System.out.println("REGION>收到主节点消息：" + line);
             if (line.startsWith("[master] drop ")) {
-                System.out.println("master::drop");
+               // System.out.println("master::drop");
                 String info = line.substring(14);
                 if(line.length()==14) return;
                 // [master] drop ip name name ...
@@ -99,7 +99,7 @@ public class MasterSocketManager implements Runnable {
                 output.println("[region] drop successfully");
             }
             else if (line.startsWith("[master] recover")) {
-                System.out.println("master::recover");
+//                System.out.println("master::recover");
                 String tableName = dataBaseManager.getMetaInfo();
                 String[] tableNames = tableName.split(" ");
                 if(tableNames.length != 0) {
@@ -115,13 +115,13 @@ public class MasterSocketManager implements Runnable {
                     }
                 }
 
-                output.println("[region] recover successfully");
+                output.println("REGION>恢复成功！");
             }
             else if (line.startsWith("[master] copy")) {
-                System.out.println("master::copy");
+//                System.out.println("master::copy");
                 String[] info = line.split(" ");
-                System.out.println("ip::" + info[2]);
-                System.out.println("table_name::" + info[3]);
+                System.out.println("REGION> master want to copy!! ip::" + info[2]);
+                System.out.println("REGION> master want to copy!! table_name::" + info[3]);
                 Thread RegionSocketSendThread = new Thread(new RegionSocketSendManager(info[2], info[3], output));
                 RegionSocketSendThread.start();
             }

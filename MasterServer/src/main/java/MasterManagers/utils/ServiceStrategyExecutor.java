@@ -64,19 +64,11 @@ public class ServiceStrategyExecutor {
             System.out.println("MASTER>bestInet: " + bestInet + " table: " + table);
             String region1 = tableManager.getRegion1(hostUrl, table);
             System.out.println("MASTER>copy region = "+region1);
-//            String message = "copy " + bestInet +" "+ table;
-//            SocketThread socketThread = tableManager.getSocketThread(region);
-//            socketThread.send(message);
-            String message1 = "copy " + bestInet + " " + table;
-            SocketThread socketThread1 = tableManager.getSocketThread(region1);
-            socketThread1.send(message1);
 
-            String message2 = "receive " + table;
-            SocketThread socketThread2 = tableManager.getSocketThread(bestInet);
-            socketThread2.send(message2);
-            Thread.sleep(2000);
-            message2 = "receive " + table + "_index.index";
-            socketThread2.send(message2);
+            String message = "copy " + bestInet + " " + table+".txt";
+            SocketThread socketThread = tableManager.getSocketThread(region1);
+            socketThread.send(message);
+
             // 这里的语句格式：hostURL
             tableManager.exchangeTable(bestInet, hostUrl);
         }

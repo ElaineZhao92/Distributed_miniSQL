@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -15,6 +16,11 @@ import java.net.Socket;
 
 // 负责和主节点进行通信的类
 public class RegionSocketSendManager implements Runnable {
+
+    private FileInputStream fileIn;
+    private DataOutputStream DataOUT;
+
+    private File file;
     private Socket region_socket;
     // private FtpUtils ftpUtils;
     private boolean isRunning = false;
@@ -26,6 +32,8 @@ public class RegionSocketSendManager implements Runnable {
 
     public RegionSocketSendManager(String DES_REGION, String table_name, PrintWriter master_output) throws IOException {
         this.region_socket = new Socket(DES_REGION, SERVER_PORT);
+        System.out.println("region: " + DES_REGION + ", port:" + SERVER_PORT);
+        this.DES_REGION = DES_REGION;
         this.table_name = table_name;
         this.master_output = master_output;
         isRunning = true;
@@ -33,18 +41,17 @@ public class RegionSocketSendManager implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("新消息>>>从节点之间发送副本线程启动！");
+        System.out.println("REGION>从节点之间发送副本线程启动！");
+        System.out.println("REGION>从节点之间发送副本成功！");
         while (isRunning) {
             if (region_socket.isClosed() || region_socket.isInputShutdown() || region_socket.isOutputShutdown()) {
                 isRunning = false;
                 break;
             }
             try {
-                sendToRegionNotice();
-                sendToRegion();
-                this.table_name = this.table_name + "_index";
-                sendToRegion();
-            } catch (IOException e) {
+                  sendFile(new File(table_name));
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -55,29 +62,42 @@ public class RegionSocketSendManager implements Runnable {
             }
         }
     }
-    public void sendToRegionNotice() throws IOException {
-        PrintWriter output = new PrintWriter(region_socket.getOutputStream(), true);
-        output.println("[region] copy " + this.table_name);
-    }
-    public void sendToRegion() throws IOException {
-        OutputStream out = region_socket.getOutputStream();
-        FileInputStream in = new FileInputStream(new File("../../../../" + table_name));
-        byte[] buf = new byte[2048];
-        int len;
-        while((len = in.read(buf)) != -1) {
-            out.write(buf, 0, len);
+    private void sendFile(File file) throws Exception {
+        try {
+
+            if (file.exists()) {
+                fileIn = new FileInputStream(file);
+                DataOUT = new DataOutputStream(region_socket.getOutputStream());
+
+                //文件名和长度
+                DataOUT.writeUTF(file.getName());
+                DataOUT.flush();
+                DataOUT.writeLong(file.length());
+                DataOUT.flush();
+
+                //开始传输文件
+                System.out.println("=========Start to transfer=========");
+                byte[] bytes = new byte[1024];
+                int length = 0;
+                long progress = 0;
+                while ((length = fileIn.read(bytes, 0, bytes.length)) != -1) {
+                    DataOUT.write(bytes, 0, length);
+                    DataOUT.flush();
+                    progress += length;
+                    System.out.println("| " + (100 * progress / file.length()) + "% |");
+                }
+                System.out.println();
+                System.out.println("=====File transferred successfully=====");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {                                //关闭数据流
+            if (fileIn != null) {
+                fileIn.close();
+            }
+            if (DataOUT != null) {
+                DataOUT.close();
+            }
         }
-        region_socket.shutdownOutput();
-        InputStream sin = region_socket.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(sin));
-        String line = null;
-        while((line = reader.readLine()) != null) {
-            master_output.println(line);
-        }
-        out.close();
-        in.close();
-        region_socket.close();
-        sin.close();
-        reader.close();
     }
 }
