@@ -3,6 +3,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 
 import javax.net.ssl.ManagerFactoryParameters;
@@ -47,6 +48,8 @@ class Client implements Runnable{
     private MasterSocketManager masterSocketManager;
     private BufferedReader input;
     private PrintWriter output;
+
+    private boolean isRunning = true;
     private FtpUtils ftpUtils;
 
     Client(Socket socket,MasterSocketManager masterSocketManager) throws IOException{
@@ -62,7 +65,11 @@ class Client implements Runnable{
     public void run(){
         System.out.println("REGION>监听客户端消息中" + socket.getInetAddress() + ":" + socket.getPort());
 
-        while(true){
+        while(isRunning){
+            if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
+                isRunning = false;
+                break;
+            }
             try {
                 Thread.sleep(Long.parseLong("1000"));
                 String sql = input.readLine();
@@ -77,6 +84,10 @@ class Client implements Runnable{
                         masterSocketManager.sendToMaster(ress);
                     }
                 }
+            } catch (SocketException e) {
+                isRunning = false;
+//                    e.printStackTrace();
+
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -97,51 +108,57 @@ class Client implements Runnable{
         API.store();
         //返回结果给客户端
         output.println(result);
-        //把catalog备份到FTP上
-//        ftpUtils.uploadFile("table_catalog", SocketUtils.getHostAddress(), "catalog");
-//        ftpUtils.uploadFile("index_catalog", SocketUtils.getHostAddress(), "catalog");
-        
         String[] sqls=sql.split(" ");
         String[] results=result.split(" ");
         String keyword=sqls[0];
-        //System.out.println("keyword::" + keyword);
-        // .toLowerCase();
-       String tablename=results[2]; //除了select语句，所有表名都在第三个String
+       String tablename = ""; //除了select语句，所有表名都在第三个String
         if(keyword.equals("create")){ //建表
             //表名保存到ftp上
-//            sendToFTP(results[2]);
-            //System.out.println("res == " + res);
-//            res="[region] create add "+ results[2];
             res.append("[region] create "+ results[2]);
-
-            //System.out.println("res == " + res);
+            tablename = results[2];
             flag=true;
-            return flag;
         }
         else if(keyword.equals("drop")){ //删表
             //把表名从ftp上删除
-//            deleteFromFTP(results[2]);
-//            res="[region] create delete "+results[2];
             res.append("[region] drop "+ results[2]);
 
+            tablename = results[2];
             flag=true;
-            return flag;
         }
         else if(keyword.equals("insert")||keyword.equals("delete")){ //记录的增删
             //从ftp上删掉旧的表，发送新的表
-           // System.out.println("Insert/Delete::!!");
             System.out.println(sqls[2]);
-//            deleteFromFTP(sqls[2]);
-//            sendToFTP(sqls[2]);
+            tablename = sqls[2];
             System.out.println("REGION>success");
             flag = false;
-            return flag;
         }
-        BufferedWriter out = new BufferedWriter(new FileWriter((tablename + "_sql.txt"), true));
-        out.write(sql + "\n");
-        return false;
+        else if(keyword.equals("select")){ //记录的增删
+            return false;
+        }
+        System.out.println("REGION>begin save sql::" + sql);
+        File file = new File(tablename + ".txt");
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Writer writer = new FileWriter(file, true);
+        try {
+            writer.write(sql + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        }
+
+        System.out.println("REGION>finish save sql!!");
+        return flag;
     }
-
-
 }
 

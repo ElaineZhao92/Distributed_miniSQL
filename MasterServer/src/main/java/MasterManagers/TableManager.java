@@ -34,9 +34,6 @@ public class TableManager {
      */
     public List<String> getIdealServer(){
         List<String> result = new ArrayList<>();
-        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()) {
-//            System.out.println(entry.getKey());
-        }
 
         for (int i = 0 ; i < 2; i ++ ){
             Integer min = Integer.MAX_VALUE;
@@ -46,11 +43,9 @@ public class TableManager {
                         continue;
                     min = entry.getValue().size();
                     result.add(entry.getKey());
-//                    System.out.println(entry.getKey());
                 }
             }
         }
-//        System.out.println(result.get(0) + " " + result.get(1));
         return result;
     }
 
@@ -167,6 +162,8 @@ public class TableManager {
         bestInetTable.addAll(tableList);
         liveServer.put(newRegion,bestInetTable);
         liveServer.remove(oldRegion);
+
+        System.out.println("whether old region in liveServer: " + liveServer.containsKey(oldRegion));
     }
 
     public List<String> getTableList(String hostUrl) {

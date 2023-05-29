@@ -61,6 +61,8 @@ public class RegionSocketReceiveManager implements Runnable {
 
     private class RegionSocketReceiveHandler implements Runnable {
         private Socket socket;
+
+
         public BufferedReader input = null;
         public PrintWriter output = null;
         public String table_name;

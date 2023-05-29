@@ -18,7 +18,7 @@ public class MasterSocketManager implements Runnable {
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
-    public final String MASTER = "10.192.134.67";
+    public final String MASTER = "192.168.202.135";
 
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);
@@ -57,6 +57,18 @@ public class MasterSocketManager implements Runnable {
     
     public void sendTableInfoToMaster(String table_info) {
         output.println("[region] recover " + table_info);
+    }
+
+    public void deleteTxt() {
+        File file = new File(".");
+        File[] files = file.listFiles();
+        for (File f : files) {
+            //是文件，则判断文件后缀是否为.txt，如果是则删除
+            if (f.getName().endsWith(".txt")) {
+                f.delete();
+            }
+        }
+        System.out.println(".txt文件删除完毕！");
     }
 
     public void receiveFromMaster() throws IOException {
@@ -108,6 +120,7 @@ public class MasterSocketManager implements Runnable {
                         try {
                             API.store();
                             API.initial();
+                            deleteTxt();
                         }
                         catch (Exception e) {
                             e.printStackTrace();
