@@ -34,23 +34,24 @@ public class TableManager {
      */
     public List<String> getIdealServer(){
         List<String> result = new ArrayList<>();
-        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()) {
-//            System.out.println(entry.getKey());
-        }
-
-        for (int i = 0 ; i < 2; i ++ ){
-            Integer min = Integer.MAX_VALUE;
-            for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
-                if(entry.getValue().size() < min){
-                    if(i == 1 && (entry.getKey() == result.get(0)))
-                        continue;
-                    min = entry.getValue().size();
-                    result.add(entry.getKey());
-//                    System.out.println(entry.getKey());
-                }
+        Integer min = Integer.MAX_VALUE;
+        String ip = "";
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            if(entry.getValue().size() < min){
+                min = entry.getValue().size();
+                ip = entry.getKey();
             }
         }
-//        System.out.println(result.get(0) + " " + result.get(1));
+        min = Integer.MAX_VALUE;
+        result.add(ip);
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
+            if(entry.getValue().size() < min && entry.getKey() != result.get(0)){
+                min = entry.getValue().size();
+                ip = entry.getKey();
+            }
+        }
+        result.add(ip);
+
         return result;
     }
 
@@ -101,6 +102,10 @@ public class TableManager {
         List<String> empty_list = new ArrayList<>();
         liveServer.put(hostURL, empty_list);
         System.out.println("MASTER>add Server OK!");
+    }
+
+    public void deleteServer(String hostURL){
+        liveServer.remove(hostURL);
     }
 
     public void removeliveServer(String hostURL){
@@ -165,7 +170,7 @@ public class TableManager {
         ips.remove(oldRegion);
         ips.add(newRegion);
         TableInfo.put(change_Table,ips);
-        System.out.println("after change ips = " + TableInfo.get(change_Table).get(0) + TableInfo.get(change_Table).get(1));
+        System.out.println("after change ips = " + TableInfo.get(change_Table).get(0) + " " +  TableInfo.get(change_Table).get(1));
         // 给新的Region 更改 liveServer.TableList
         List <String> bestInetTable = liveServer.get(newRegion);
         bestInetTable.add(change_Table);

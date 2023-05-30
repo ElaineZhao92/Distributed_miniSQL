@@ -4,6 +4,7 @@ import MasterManagers.SocketManager.SocketThread;
 import MasterManagers.TableManager;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -62,12 +63,15 @@ public class ServiceStrategyExecutor {
             tableManager.removeliveServer(hostUrl);
             return ;
         }
+        List<String> tables = new ArrayList<>();
         System.out.println("-----table List for: " + hostUrl);
         for (String table: tableList){
             System.out.println(table);
+            tables.add(table);
         }
         // 获得除了当前ip之外，最佳的ip作为接任Region
-        for (String table : tableList){
+        for (String table : tables){
+
             String bestInet = tableManager.getIdealServer(hostUrl, table);
             System.out.println("MASTER>bestInet: " + bestInet + " table: " + table);
             String region1 = tableManager.getRegion1(hostUrl, table);
@@ -79,8 +83,9 @@ public class ServiceStrategyExecutor {
 
             // 这里的语句格式：hostURL
             tableManager.exchangeTable(bestInet, hostUrl, table);
-
+            Thread.sleep(1000);
         }
+        tableManager.deleteServer(hostUrl);
     }
 
     //恢复策略,主节点给从节点发消息，让该从节点删除所有旧的表,从节点重新上线，
