@@ -18,7 +18,7 @@ public class MasterSocketManager implements Runnable {
     private boolean isRunning = false;
 
     public final int SERVER_PORT = 12345;
-    public final String MASTER = "192.168.202.135";
+    public final String MASTER = "172.20.10.4";
 
     public MasterSocketManager() throws IOException {
         this.socket = new Socket(MASTER, SERVER_PORT);

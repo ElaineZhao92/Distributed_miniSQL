@@ -58,6 +58,14 @@ public class ServiceStrategyExecutor {
         System.out.println("MASTER>Invalid：hostUrl");
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
+        if (tableList.isEmpty()){
+            tableManager.removeliveServer(hostUrl);
+            return ;
+        }
+        System.out.println("-----table List for: " + hostUrl);
+        for (String table: tableList){
+            System.out.println(table);
+        }
         // 获得除了当前ip之外，最佳的ip作为接任Region
         for (String table : tableList){
             String bestInet = tableManager.getIdealServer(hostUrl, table);
@@ -70,7 +78,8 @@ public class ServiceStrategyExecutor {
             socketThread.send(message);
 
             // 这里的语句格式：hostURL
-            tableManager.exchangeTable(bestInet, hostUrl);
+            tableManager.exchangeTable(bestInet, hostUrl, table);
+
         }
     }
 

@@ -34,6 +34,9 @@ public class TableManager {
      */
     public List<String> getIdealServer(){
         List<String> result = new ArrayList<>();
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet()) {
+//            System.out.println(entry.getKey());
+        }
 
         for (int i = 0 ; i < 2; i ++ ){
             Integer min = Integer.MAX_VALUE;
@@ -43,9 +46,11 @@ public class TableManager {
                         continue;
                     min = entry.getValue().size();
                     result.add(entry.getKey());
+//                    System.out.println(entry.getKey());
                 }
             }
         }
+//        System.out.println(result.get(0) + " " + result.get(1));
         return result;
     }
 
@@ -98,6 +103,10 @@ public class TableManager {
         System.out.println("MASTER>add Server OK!");
     }
 
+    public void removeliveServer(String hostURL){
+        liveServer.remove((hostURL));
+    }
+
     public List<String> getInetAddress(String table){
         System.out.println("MASTER>get " + table + "'s region ips");
         for(Map.Entry<String, List<String>> entry : TableInfo.entrySet()){
@@ -148,22 +157,22 @@ public class TableManager {
         liveServer.get(ip).removeIf(table::equals);
     }
 
-    public void exchangeTable(String newRegion, String oldRegion) {
+    public void exchangeTable(String newRegion, String oldRegion, String change_Table) {
         List <String> tableList = getTableList(oldRegion);
         // oldRegion 的 TableList 下的表格，要全部更新tableInfo
-        for(String table : tableList){
-            List<String> ips = TableInfo.get(table);
-            ips.remove(oldRegion);
-            ips.add(newRegion);
-            TableInfo.put(table,ips);
-        }
-        // 给新的Region 建立liveServer.TableList
-        List <String> bestInetTable = liveServer.get(newRegion);
-        bestInetTable.addAll(tableList);
-        liveServer.put(newRegion,bestInetTable);
-        liveServer.remove(oldRegion);
 
-        System.out.println("whether old region in liveServer: " + liveServer.containsKey(oldRegion));
+        List<String> ips = TableInfo.get(change_Table);
+        ips.remove(oldRegion);
+        ips.add(newRegion);
+        TableInfo.put(change_Table,ips);
+        System.out.println("after change ips = " + TableInfo.get(change_Table).get(0) + TableInfo.get(change_Table).get(1));
+        // 给新的Region 更改 liveServer.TableList
+        List <String> bestInetTable = liveServer.get(newRegion);
+        bestInetTable.add(change_Table);
+        liveServer.put(newRegion,bestInetTable);
+        List <String> oldRegion_tables = liveServer.get(oldRegion);
+        oldRegion_tables.remove(change_Table);
+        liveServer.put(oldRegion,oldRegion_tables);
     }
 
     public List<String> getTableList(String hostUrl) {

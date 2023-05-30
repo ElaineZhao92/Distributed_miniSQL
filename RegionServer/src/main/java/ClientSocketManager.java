@@ -73,7 +73,7 @@ class Client implements Runnable{
             try {
                 Thread.sleep(Long.parseLong("1000"));
                 String sql = input.readLine();
-                if(sql!=null){
+                if(sql!=null&&!sql.equals("2")){
                     StringBuffer res = new StringBuffer(""); //sql语句处理后的结果
                     boolean isTableModified=getResult(sql,socket.getInetAddress().toString(),res);
                     //System.out.println("getResult ok!!");
