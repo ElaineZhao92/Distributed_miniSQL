@@ -63,6 +63,15 @@ public class ServiceStrategyExecutor {
             tableManager.removeliveServer(hostUrl);
             return ;
         }
+        if (tableManager.serverNum() == 2){
+            System.out.println("It has only 2 region servers, no invalid strategy can be exectued. ");
+            System.out.println("The remaining region server is : " + tableManager.getUniqueServer());
+            String region = tableManager.getUniqueServer();
+            tableManager.exchangeTable(region);
+            tableManager.deleteServer(hostUrl);
+            return ;
+
+        }
         List<String> tables = new ArrayList<>();
         System.out.println("-----table List for: " + hostUrl);
         for (String table: tableList){

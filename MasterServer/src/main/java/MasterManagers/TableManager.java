@@ -4,10 +4,7 @@ import MasterManagers.SocketManager.SocketThread;
 import com.google.common.collect.Table;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
 /**
  * 记录所有连结果的ip
@@ -108,6 +105,17 @@ public class TableManager {
         liveServer.remove(hostURL);
     }
 
+    public int serverNum(){
+        return liveServer.size();
+    }
+
+    public String getUniqueServer(){
+        String hostURL = "";
+        for(Map.Entry<String, List<String>> entry : liveServer.entrySet())
+            hostURL = entry.getKey();
+        return hostURL;
+    }
+
     public void removeliveServer(String hostURL){
         liveServer.remove((hostURL));
     }
@@ -162,6 +170,25 @@ public class TableManager {
         liveServer.get(ip).removeIf(table::equals);
     }
 
+    /***
+     * 当系统内只有一个region时候，需要把所有表TableInfo中原来没挂的那张region的ip给抹去。
+     * 现在 主 副 region机制失效，变成只有主
+     */
+    public void exchangeTable(String region){
+        for(Map.Entry<String, List<String>> entry : TableInfo.entrySet()){
+            if (entry.getValue().get(0).equals(region))
+                entry.getValue().set(1, region);
+            else if (entry.getValue().get(1).equals(region))
+                entry.getValue().set(0, region);
+        }
+    }
+
+    /***
+     *
+     * @param newRegion
+     * @param oldRegion
+     * @param change_Table
+     */
     public void exchangeTable(String newRegion, String oldRegion, String change_Table) {
         List <String> tableList = getTableList(oldRegion);
         // oldRegion 的 TableList 下的表格，要全部更新tableInfo
