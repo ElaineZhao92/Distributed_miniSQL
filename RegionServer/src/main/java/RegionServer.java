@@ -60,6 +60,6 @@ public class RegionServer implements Runnable {
         MasterSocketThread.start();
 //        System.out.println("masterso finish!");
 
-        System.out.println("REGION>从节点开始运行!");
+        System.out.println("REGION> 从节点开始运行!");
     }
 }

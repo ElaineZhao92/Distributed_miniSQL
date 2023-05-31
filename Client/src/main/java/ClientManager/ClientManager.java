@@ -113,19 +113,19 @@ public class ClientManager {
 
     // use ip connect to the region ,端口号固定为22222
     public void connectToRegion(String ip, String sql) throws IOException, InterruptedException {
-        if( this.regionSocketManager.connectRegionServer(ip)){
-
-            Thread.sleep(100);
-            this.regionSocketManager.sendToRegion(sql);}
+       
+            
+       if( this.regionSocketManager.connectRegionServer(ip)){
+        Thread.sleep(100);
+        this.regionSocketManager.sendToRegion(sql);}
         else{
             //region 挂了重新进master处理
-            System.out.println("进入else 发送给master");
             Map<String, String> target = this.sqlParser(sql);
             if(target.get("kind").equals("create")){
-                this.masterSocketManager.processCreate(sql,target.get("kind"), target.get("name"));
+            this.masterSocketManager.processCreate(sql,target.get("kind"), target.get("name"));
             }
             else{
-                this.masterSocketManager.process(sql,target.get("kind"), target.get("name"));}
+            this.masterSocketManager.process(sql,target.get("kind"), target.get("name"));}
         }
     }
     // parse the sql

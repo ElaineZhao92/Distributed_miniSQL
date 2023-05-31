@@ -58,12 +58,12 @@ class Client implements Runnable{
         this.ftpUtils=new FtpUtils();
         this.input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output=new PrintWriter(socket.getOutputStream(),true);
-        System.out.println("REGION>建立了新的客户端子线程：" + socket.getPort());
+        System.out.println("REGION> 建立了新的客户端子线程：" + socket.getPort());
     }
 
     //不断循环处理sql语句
     public void run(){
-        System.out.println("REGION>监听客户端消息中" + socket.getInetAddress() + ":" + socket.getPort());
+        System.out.println("REGION> 监听客户端消息中" + socket.getInetAddress() + ":" + socket.getPort());
 
         while(isRunning){
             if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
@@ -101,7 +101,7 @@ class Client implements Runnable{
 
     public boolean getResult (String sql,String ip,StringBuffer res) throws Exception {
         boolean flag=false;
-        System.out.println("REGION>要处理的命令：" + sql);
+        System.out.println("REGION> 要处理的命令：" + sql);
         //处理sql语句
         String result=Interpreter.interpret(sql);
         //保存catalog到文件中
@@ -113,29 +113,25 @@ class Client implements Runnable{
         String keyword=sqls[0];
        String tablename = ""; //除了select语句，所有表名都在第三个String
         if(keyword.equals("create")){ //建表
-            //表名保存到ftp上
             res.append("[region] create "+ results[2]);
             tablename = results[2];
             flag=true;
         }
         else if(keyword.equals("drop")){ //删表
-            //把表名从ftp上删除
             res.append("[region] drop "+ results[2]);
 
             tablename = results[2];
             flag=true;
         }
         else if(keyword.equals("insert")||keyword.equals("delete")){ //记录的增删
-            //从ftp上删掉旧的表，发送新的表
-            System.out.println(sqls[2]);
+            //System.out.println(sqls[2]);
             tablename = sqls[2];
-            System.out.println("REGION>success");
             flag = false;
         }
         else if(keyword.equals("select")){ //记录的增删
             return false;
         }
-        System.out.println("REGION>begin save sql::" + sql);
+        System.out.println("REGION> 开始存储sql语句:" + sql);
         File file = new File(tablename + ".txt");
         if(!file.exists()) {
             try {
@@ -157,7 +153,7 @@ class Client implements Runnable{
             }
         }
 
-        System.out.println("REGION>finish save sql!!");
+        System.out.println("REGION> 存储sql语句成功！");
         return flag;
     }
 }

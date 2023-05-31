@@ -41,8 +41,8 @@ public class RegionSocketSendManager implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("REGION>从节点之间发送副本线程启动！");
-        System.out.println("REGION>从节点之间发送副本成功！");
+        System.ln("REGION> 从节点之间发送副本线程启动！");
+        System.out.println("REGION> 从节点之间发送副本成功！");
         while (isRunning) {
             if (region_socket.isClosed() || region_socket.isInputShutdown() || region_socket.isOutputShutdown()) {
                 isRunning = false;

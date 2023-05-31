@@ -4,11 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.ServerSocket;
 import java.util.Map;
-import java.net.*;
+
 import org.apache.commons.lang3.StringUtils;
 public class RegionSocketManager {
     public Socket socket = null;
@@ -36,41 +36,27 @@ public class RegionSocketManager {
     //     System.out.println("CLIENT>>>connect to region  "+this.region+" : " + PORT);
     // }
 
-    public boolean connectRegionServer(String ip) throws IOException {
+    public boolean connectRegionServer(String ip) throws IOException ,ConnectException{
         // System.out.println("connectRegionServer : "+ip);
+    try{ 
         socket = new Socket(ip, 22222);
-
-
-        Boolean host_reachable = sendPingRequest(ip, 2000);
-        try {
-            socket.sendUrgentData(0xFF);//clientSocket.setKeepAlive(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            host_reachable = false;
-           return false;
-        }
-
-        System.out.println("发送给region");
+        socket.sendUrgentData(0xFF);
+    }
+    catch(ConnectException se){ 
+        return false; 
+    } 
+    catch (Exception e) {
+        e.printStackTrace();
+    }     
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         output = new PrintWriter(socket.getOutputStream(), true);
         isRunning = true;
         this.listenToRegion();
         System.out.println("CLIENT>connect to region  " + ip + " : 22222");
         return true;
-
     }
 
-    public static boolean sendPingRequest(String ipAddress , int timeout_ms) {
-        try {
-            InetAddress geek = InetAddress.getByName(ipAddress);
-            if (geek.isReachable(timeout_ms))
-                return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
 
-    }
     public void receiveFromRegion() throws IOException {
         String line = new String("");
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
@@ -80,7 +66,7 @@ public class RegionSocketManager {
         }
         if (line != null) {
             //print result
-            String prompt="CLIENT>Info from region is: ";
+            String prompt="";
             int width=10;//每个字段值10个空间
         // if(line!=NULL){
         if(line.contains("|")){
@@ -93,7 +79,9 @@ public class RegionSocketManager {
             System.out.printf("|%n");
         }
         else{
-            System.out.println(prompt+line);
+            if(line.equals("-----")) {System.out.println(prompt);}
+            else{System.out.println(prompt+line);
+            }
         }
         }
     }

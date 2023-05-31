@@ -43,7 +43,7 @@ public class RegionSocketReceiveManager implements Runnable {
         dFormat.setRoundingMode(RoundingMode.HALF_UP);
         dFormat.setMinimumFractionDigits(1);
         dFormat.setMaximumFractionDigits(1);
-        System.out.println("REGION>从节点接收线程已启动！！PORT：" + REGION_SERVER_PORT);
+        System.out.println("REGION> 从节点接收线程已启动！PORT：" + REGION_SERVER_PORT);
     }
     //不断循环连接从节点
     public void run() {
@@ -54,7 +54,7 @@ public class RegionSocketReceiveManager implements Runnable {
                 Thread HandlerTHread = new Thread(new RegionSocketReceiveHandler(new_region, table_name));
                 HandlerTHread.start();
             } catch (Exception e) {
-                System.out.println("REGION>Region copy 接收异常：" + e.getMessage());
+                System.out.println("REGION> Region copy 接收异常：" + e.getMessage());
             }
         }
     }
@@ -74,10 +74,10 @@ public class RegionSocketReceiveManager implements Runnable {
             this.table_name = table_name;
         }
         public void run() {
-            System.out.println("REGION>本节点已被从节点连接！");
+            System.out.println("REGION> 本节点已被从节点连接！");
             String line;
             try {
-                System.out.println("REGION> 收到文件::" + table_name);
+                System.out.println("REGION> 收到sql文件，表名为：" + table_name);
                 get();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -120,18 +120,18 @@ public class RegionSocketReceiveManager implements Runnable {
                     foStream.write(bytes, 0, length);
                     foStream.flush();
                 }
-                System.out.println("REGION>收到文件[ File Name: " + fileName + " ] [ Size: " + getFormatFileSize(fileLength) + " ]");
+                System.out.println("REGION> 收到文件[ File Name: " + fileName + " ] [ Size: " + getFormatFileSize(fileLength) + " ]");
                 //开始读取文件
-                System.out.println("REGION>文件内容如下：");
+                System.out.println("REGION> 文件内容如下：");
                 BufferedReader reader;
                 try {
                     reader = new BufferedReader(new FileReader(
                             fileName));
                     String line = reader.readLine();
                     while (line != null) {
-                        System.out.println("REGION>" + line);
+                        System.out.println("REGION> " + line);
                         Interpreter.interpret(line);
-                        System.out.println("REGION>执行完毕！");
+                        System.out.println("REGION> 执行完毕！");
                         // read next line
                         line = reader.readLine();
                     }

@@ -66,9 +66,10 @@ public class ServiceStrategyExecutor {
         List<String> tables = new ArrayList<>();
         System.out.println("-----table List for: " + hostUrl);
         for (String table: tableList){
-            System.out.println(table);
+            System.out.print(table + " ");
             tables.add(table);
         }
+        System.out.println();
         // 获得除了当前ip之外，最佳的ip作为接任Region
         for (String table : tables){
 

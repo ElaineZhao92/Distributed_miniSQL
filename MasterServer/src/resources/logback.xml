@@ -7,7 +7,7 @@
             <!-- Daily rollover -->
             <fileNamePattern>/D/Log/ro.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- Keep 7 days' worth of history -->
-            <maxHistory>7</maxHistory>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
