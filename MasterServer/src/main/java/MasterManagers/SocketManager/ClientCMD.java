@@ -41,23 +41,26 @@ public class ClientCMD {
             result = "insert " + ips.get(0) + " "+ ips.get(1) +" "+ tableName;
             System.out.println(result);
         }
-        else if (cmd.startsWith("select")) { // create table_name
+        else if (cmd.startsWith("select")) { // select table_name
             tableName = cmd.substring(7);
             List<String> ips = tableManager.getInetAddress(tableName);
             result = "select " + ips.get(0) + " "+ ips.get(1) +" "+ tableName;
             System.out.println(result);
         }
-        else if (cmd.startsWith("delete")) { // create table_name
+        else if (cmd.startsWith("delete")) { // delete table_name
             tableName = cmd.substring(7);
             List<String> ips = tableManager.getInetAddress(tableName);
             result = "delete " + ips.get(0) + " "+ ips.get(1) +" "+ tableName;
             System.out.println(result);
         }
-        else if (cmd.startsWith("drop")) { // create table_name
+        else if (cmd.startsWith("drop")) { // drop table_name
             tableName = cmd.substring(5);
             List<String> ips = tableManager.getInetAddress(tableName);
             result = "drop " + ips.get(0) + " "+ ips.get(1) +" "+ tableName;
             System.out.println(result);
+        }
+        else if (cmd.startsWith("show")) {
+            result = "show " + tableManager.showTables();
         }
         return result;
     }

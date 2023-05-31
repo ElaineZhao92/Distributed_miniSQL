@@ -123,10 +123,6 @@ public class TableManager {
         return hostURL;
     }
 
-    public void removeliveServer(String hostURL){
-        liveServer.remove((hostURL));
-    }
-
     public List<String> getInetAddress(String table){
         System.out.println("MASTER>get " + table + "'s region ips");
         for(Map.Entry<String, List<String>> entry : TableInfo.entrySet()){
@@ -221,6 +217,14 @@ public class TableManager {
             }
         }
         return null;
+    }
+
+    public String showTables(){
+        String tables = "";
+        for(Map.Entry<String, List<String>> entry : TableInfo.entrySet()){
+            tables += entry.getKey() + " ";
+        }
+        return tables;
     }
 
     public String getRegion1(String hostUrl, String tableName){

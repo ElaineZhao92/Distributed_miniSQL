@@ -92,11 +92,21 @@ public class MasterSocketManager {
             if (line.startsWith("[master]")) {
                 // 截取ip地址
                 String[] args = line.split(" ");
+                String op= args[1];
+                if(op.equals("show")){
+                    System.out.printf("CLIENT>");
+                    for (int i=2;i<args.length;i++){
+                        System.out.printf(args[i]);
+                    }
+                    System.out.println("");
+                    return ;
+                }
                 System.out.println(args[0] + "|" + args[1] + "|" + args[2] + "|" + args[3]);
-                String fip = args[2], sip=args[3],table = args[4], op= args[1];
+                String fip = args[2], sip=args[3],table = args[4];
                 this.clientManager.cacheManager.setfCache(table, fip);
                 this.clientManager.cacheManager.setsCache(table, sip);
                 //发送给主 副两个节点
+                
                 this.clientManager.connectToRegion(fip, commandMap.get(table));
                 if(!op.equals("select")){
                     this.clientManager.connectToRegion(sip, commandMap.get(table));}
@@ -116,6 +126,7 @@ public class MasterSocketManager {
 
     public void process(String sql,String op, String table) {
         // 来处理sql语句
+        if(op.equals("show")){table="tables";}
         this.commandMap.put(table, sql);
         // 用<table>前缀表示要查某个表名对应的端口号
         this.sendToMaster(op,table);

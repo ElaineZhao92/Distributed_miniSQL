@@ -60,7 +60,7 @@ public class ServiceStrategyExecutor {
         StringBuffer allTable = new StringBuffer();
         List<String> tableList = tableManager.getTableList(hostUrl);//获取tableManager中hostUrl的表格列表
         if (tableList.isEmpty()){
-            tableManager.removeliveServer(hostUrl);
+            tableManager.deleteServer(hostUrl);
             return ;
         }
         if (tableManager.serverNum() == 2){
