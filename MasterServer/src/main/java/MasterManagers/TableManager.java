@@ -41,6 +41,13 @@ public class TableManager {
         }
         min = Integer.MAX_VALUE;
         result.add(ip);
+
+        // 只有一个region的情况，返回的主/副region的ip一样
+        if(serverNum() == 1){
+            result.add(ip);
+            return result;
+        }
+
         for(Map.Entry<String, List<String>> entry : liveServer.entrySet()){
             if(entry.getValue().size() < min && entry.getKey() != result.get(0)){
                 min = entry.getValue().size();
