@@ -26,15 +26,6 @@ public class RegionSocketManager {
         this.region = ip;
     }
 
-    // 与Region建立连接
-    // public void connectRegionServer(int PORT) throws IOException {
-    //     socket = new Socket(region, PORT);
-    //     input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    //     output = new PrintWriter(socket.getOutputStream(), true);
-    //     isRunning = true;
-    //     this.listenToRegion();
-    //     System.out.println("CLIENT>>>connect to region  "+this.region+" : " + PORT);
-    // }
 
     public boolean connectRegionServer(String ip) throws IOException ,ConnectException{
         // System.out.println("connectRegionServer : "+ip);
@@ -68,7 +59,6 @@ public class RegionSocketManager {
             //print result
             String prompt="";
             int width=10;//每个字段值10个空间
-        // if(line!=NULL){
         if(line.contains("|")){
             String []values=line.split("\\|");
             System.out.println(prompt);
@@ -83,6 +73,7 @@ public class RegionSocketManager {
             else{System.out.println(prompt+line);
             }
         }
+
         }
     }
 

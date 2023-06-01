@@ -54,4 +54,16 @@ public class CacheManager {
         scache.put(table, server);
         System.out.println("存入缓存：table name" + table + " 副region IP:" + server);
     }
+
+    public void delCache(String table){
+        /* 
+       删除缓存中的table 
+        */
+        if(this.fcache.containsKey(table)){
+            this.fcache.remove(table);
+        }
+        if(this.scache.containsKey(table)){
+            this.scache.remove(table);
+        }
+    }
 }

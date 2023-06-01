@@ -88,6 +88,7 @@ public class ClientManager {
                     }
                 }
                 if (fcache == null) {
+                   
                     this.masterSocketManager.process(command,target.get("kind"), table);
                 } else {
                     // 如果查到了端口号就直接在RegionSocketManager中进行连接
@@ -95,7 +96,10 @@ public class ClientManager {
                     if(!target.get("kind").equals("select")){
                         //非select 再连副
                     scache = cacheManager.getsCache(table);
-                    this.connectToRegion(scache, command);}
+                    if(scache!=fcache){
+                        this.connectToRegion(scache, command);
+                    }
+                    }
                 }
 
 
@@ -103,24 +107,20 @@ public class ClientManager {
         }
     }
 
-    // use port connect to the region
-    // drop
-    // public void connectToRegion(int PORT, String sql) throws IOException, InterruptedException {
-    //     this.regionSocketManager.connectRegionServer(PORT);
-    //     Thread.sleep(100);
-    //     this.regionSocketManager.sendToRegion(sql);
-    // }
-
     // use ip connect to the region ,端口号固定为22222
     public void connectToRegion(String ip, String sql) throws IOException, InterruptedException {
        
-            
-       if( this.regionSocketManager.connectRegionServer(ip)){
-        Thread.sleep(100);
-        this.regionSocketManager.sendToRegion(sql);}
+        Map<String, String> target = this.sqlParser(sql); 
+       if(this.regionSocketManager.connectRegionServer(ip)){
+            Thread.sleep(100);
+            this.regionSocketManager.sendToRegion(sql);
+            if (target.get("kind").equals("drop")){
+                //delete the corresponding cache 
+                this.cacheManager.delCache(target.get("name"));
+            }
+        }
         else{
-            //region 挂了重新进master处理
-            Map<String, String> target = this.sqlParser(sql);
+            //region 挂了重新进master处理     
             if(target.get("kind").equals("create")){
             this.masterSocketManager.processCreate(sql,target.get("kind"), target.get("name"));
             }
@@ -156,6 +156,11 @@ public class ClientManager {
                     break;
                 }
             }
+        }
+        else if(words[0].equals("show")){
+            result.put("show", words[0]);
+            result.put("cache", "false");
+            return result;
         }
         // 如果没有发现表名就说明出出现错误
         if (!result.containsKey("name")) {

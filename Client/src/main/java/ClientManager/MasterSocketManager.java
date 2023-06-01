@@ -74,20 +74,7 @@ public class MasterSocketManager {
         else{
             System.out.println(prompt+line);
         }
-            // 已经废弃的方案
-            // if (line.startsWith("<table>")) {
-            //     String[] args = line.substring(7).split(" ");
-            //     String sql = commandMap.get(args[0]);
-            //     System.out.println(sql);
-            //     // 如果查到的端口号有对应的表
-            //     if (sql != null) {
-            //         int PORT = Integer.parseInt(args[1]);
-            //         commandMap.remove(args[0]);
-            //         // 查询到之后在client的cache中设置一个缓存
-            //         this.clientManager.cacheManager.setCache(args[0], String.valueOf(PORT));
-            //         this.clientManager.connectToRegion(PORT, sql);
-            //     }
-            // }
+            
             // 主节点通信协议的解析方案
             if (line.startsWith("[master]")) {
                 // 截取ip地址
