@@ -96,7 +96,7 @@ public class ClientManager {
                     if(!target.get("kind").equals("select")){
                         //非select 再连副
                     scache = cacheManager.getsCache(table);
-                    if(scache!=fcache){
+                    if(!scache.equals(fcache)){
                         this.connectToRegion(scache, command);
                     }
                     }

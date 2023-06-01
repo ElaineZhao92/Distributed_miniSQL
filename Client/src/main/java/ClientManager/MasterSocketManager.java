@@ -95,7 +95,7 @@ public class MasterSocketManager {
                 //发送给主 副两个节点
                 
                 this.clientManager.connectToRegion(fip, commandMap.get(table));
-                if(!op.equals("select")){
+                if(!op.equals("select") && (!sip.equals(fip))){
                     this.clientManager.connectToRegion(sip, commandMap.get(table));}
             }
         }
